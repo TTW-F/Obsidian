@@ -1,0 +1,2087 @@
+/* @settings
+name: Composer+
+id: blue-topaz-legacy-for-composer
+settings:
+- id: btlfc-layout
+  title: Layout
+  title.zh: 布局
+  type: heading
+  level: 1
+  collapsed: true
+- id: anp-alt-tab-header
+  title: 
+  title.zh: 切换标签页动画效果
+  description: 
+  type: heading
+  level: 2
+  collapsed: true
+- id: anp-alt-tab-style
+  title:
+  title.zh: 标签页动画效果
+  type: class-select
+  allowEmpty: false
+  default: anp-alternate-tab-toggle
+  options:
+  - label: Safari-style (Animated)
+    value: anp-alternate-tab-toggle
+  - label: Default
+    value: none
+- id: albus-setting-card
+  title:
+  title.zh: 设置界面样式调整
+  description: 
+  type: heading
+  level: 2
+  collapsed: true
+- id: Grid-Layout-info-text
+  title: Information
+  title.zh: 更多信息
+  description: "本样式参考了Huajin的[obsidian-settings-management](https://github.com/xhuajin/obsidian-settings-management/)插件的样式。"
+  type: info-text
+  markdown: true
+- id: hotkey-layout
+  title:
+  title.zh: 关闭快捷键列表卡片化
+  type: class-toggle
+  default: false
+- id: plugin-layout
+  title:
+  title.zh: 关闭核心插件列表卡片化
+  type: class-toggle
+  default: false
+- id: installed-plugin-layout
+  title:
+  title.zh: 关闭第三方插件列表卡片化
+  type: class-toggle
+  default: false
+- id: btlfc-s-bar
+  title:
+  title.zh: 滚动条
+  description: 
+  type: heading
+  level: 2
+  collapsed: true
+- id: btlfc-s-bar-switch
+  title:
+  title.zh: 关闭滚动条
+  type: class-toggle
+  default: false
+- id: btlfc-s-bar
+  title:
+  title.zh: 彩虹文件目录
+  description: 
+  type: heading
+  level: 2
+  collapsed: true
+- id: folder-bg-opacity-setting
+  title: Folder Background Opacity
+  title.zh: 文件夹背景不透明度
+  description: Set the background opacity of the folder
+  description.zh: 设置文件夹的背景不透明度
+  type: variable-number
+  default: 0.08
+  min: 0
+  max: 1
+- id: folder-text-opacity-setting
+  title: Folder Text Opacity
+  title.zh: 文件夹文本不透明度
+  description: Set the text opacity of the folder
+  description.zh: 设置文件夹的文本不透明度
+  type: variable-number
+  default: 0.85
+  min: 0
+  max: 1
+- id: folder-hover-opacity-setting
+  title: Folder Hover Opacity
+  title.zh: 文件夹悬停不透明度
+  description: Set the hover opacity of the folder
+  description.zh: 设置文件夹的悬停不透明度
+  type: variable-number
+  default: 0.12
+  min: 0
+  max: 1
+- id: folder-sub-bg-opacity-setting
+  title: Folder Sub Background Opacity
+  title.zh: 子文件夹背景不透明度
+  description: Set the background opacity of the sub-folder
+  description.zh: 设置子文件夹的背景不透明度
+  type: variable-number
+  default: 0.04
+  min: 0
+  max: 1
+- id: folder-sub-text-opacity-setting
+  title: Folder Sub Text Opacity
+  title.zh: 子文件夹文本不透明度
+  description: Set the text opacity of the sub-folder
+  description.zh: 设置子文件夹的文本不透明度
+  type: variable-number
+  default: 0.7
+  min: 0
+  max: 1
+- id: albus-doc-property
+  title:
+  title.zh: 文档属性
+  description: 
+  type: heading
+  level: 2
+  collapsed: true
+- id: albus-doc-property-switch
+  title: 
+  title.zh: 文档属性显示方式
+  description:
+  description.zh:
+  type: class-select
+  allowEmpty: false
+  default: doc--hide
+  options:
+      - label: 阅读模式下隐藏
+        value: doc--hide
+      - label: 全模式右上角悬浮球
+        value: doc--ball
+*/
+
+
+
+/* ========================================
+Albus-0 预设
+======================================== */
+
+/* ========================================
+Albus-0.1 浅色模式
+======================================== */
+.theme-light {
+  --info-card-shadow: rgba(0, 0, 0, 0.5);
+  --info-card-text: rgba(0, 0, 0, 0.2);
+  --hr-color-side: var(--background-primary);
+  --hr-color-center: var(--text-normal);
+  --ib-color-bg: #c0c9d8;
+  --math-callout-shadow: #3A4659;
+  --key-bg-top: #f5f5f5;
+  --key-bg-bottom: #e0e0e0;
+  --key-border: #d0d0d0;
+  --rainbow-button-bg: white;
+  --rainbow-button-t: black;
+  --p-kanban-bg-color: #d3d3d32d;
+  --p-kanban-border-color: #a0a0a060;
+  --p-kanban-card-color-1: #ffffff80;
+  --p-kanban-card-color-2: #ffffff;
+  --p-kanban-color-6: #f18e8e65;
+  --p-kanban-color-5: #eeb36f65;
+  --p-kanban-color-4: #d1d77f65;
+  --p-kanban-color-3: #8ce38465;
+  --p-kanban-color-2: #7cdddd65;
+  --p-kanban-color-1: #52aaf365;
+  --p-kanban-color-8: #ba8be165;
+  --p-kanban-color-7: #e677e065;
+  --p-kanban-color-simple: #cdcdcd2c;
+  --p-kanban-color-shadow: #cfcfcf4d;
+	--text-highlight-background: rgba(248, 227, 217, 0.9);
+	--text-highlight-border-color: rgb(167, 98, 64);
+	--text-highlight-color: rgb(102, 80, 63);
+  --theme-color-translucent-015: hsla(var(--interactive-accent-hsl),0.15);
+  --stickies-color-1: #b8b3e2;
+  --stickies-color-2: #e9c6f1;
+  --stickies-change-color: #F7E999;
+  --stickies-shadow-color: rgb(0, 0, 0, 0.4);
+  --tape-color: #acacac65;
+  --cloze-bg-color: var(--accent-strong);
+  --cloze-decoration: none;
+  --cloze-decoration-color: red;
+  --cloze-decoration-2: dashed;
+  --cloze-decoration-color-2: var(--theme-color);
+  --cloze-bg-color-3: transparent;
+  --cloze-decoration-3: dashed;
+  --cloze-decoration-color-3: var(--theme-color);
+  --strong-em-highlight-color: #237add;
+  --mark-highlight-strong-em: #ff880049;
+  --text-highlight-bg: hsla(var(--text-highlight-bg-h-light), var(--text-highlight-bg-s-light), var(--text-highlight-bg-l-light), var(--text-highlight-bg-a-light));
+  --text-search-highlight-bg: #ffd1dd;
+  --strong-em-color-1: #1048ff;
+  --strong-em-color-2: #14c8ff;
+
+  --custom-color-red: 180, 99, 122;
+  --custom-color-maroon: 180, 99, 122;
+  --custom-color-peach: 214, 129, 125;
+  --custom-color-yellow: 234, 157, 52;
+  --custom-color-green: 86, 148, 159;
+  --custom-color-teal: 86, 148, 159;
+  --custom-color-sky: 40, 105, 131;
+  --custom-color-sapphire: 40, 105, 131;
+  --custom-color-blue: 40, 105, 131;
+  --custom-color-lavender: 144, 122, 169;
+  --custom-color-mauve: 144, 122, 169;
+
+  --card-bg-color: white;
+  --commander-button-color: #554D47;
+  --scroll-bar-color-new: #554d4725;
+  --scroll-bar-color-new2: #554d475a;
+
+  --input-shadow-hover: var(--input-shadow-hover-light);
+  --input-shadow-hover-light: 0px 4px 8px -4px rgba(0, 0, 0, 0.16), inset 0px -1px 0px rgba(0, 0, 0, 0.04), inset 0px 0px 0px 1px rgba(0, 0, 0, 0.12), inset 0px 2px 0.75px rgba(255, 255, 255, 0.4), inset 0px -3px 0.75px rgba(0, 0, 0, 0.04);
+
+  --text-score-color: rgb(128, 0, 0);
+}
+
+/* ========================================
+Albus-0.2 深色模式
+======================================== */
+.theme-dark {
+  --info-card-shadow: rgba(255, 255, 255, 0.5);
+  --info-card-text: rgba(255, 255, 255, 0.2);
+  --hr-color-side: var(--background-primary);
+  --hr-color-center: var(--text-normal);
+  --ib-color-bg: #c0c9d8;
+  --math-callout-shadow: #D4D9E0;
+  --key-bg-top: #2a2a2a;
+  --key-bg-bottom: #1f1f1f;
+  --key-border: #404040;
+  --rainbow-button-bg: black;
+  --rainbow-button-t: white;
+  --kanban-color-1: #0065d852;
+  --kanban-color-2: #30e4e441;
+  --kanban-color-3: #1cb54f44;
+  --kanban-color-4: #97b82b49;
+  --kanban-color-5: #bb722d41;
+  --kanban-color-6: #d12e2e42;
+  --kanban-color-7: #8f36cb3f;
+  --p-kanban-bg-color: #6c6c6c42;
+  --p-kanban-border-color: transparent;
+  --p-kanban-card-color-1: #0000003f;
+  --p-kanban-card-color-2: #41414136;
+  --p-kanban-color-6: #f3424252;
+  --p-kanban-color-5: #eb973752;
+  --p-kanban-color-4: #d2dd3852;
+  --p-kanban-color-3: #38ce2a52;
+  --p-kanban-color-2: #2ec4c452;
+  --p-kanban-color-1: #3496e652;
+  --p-kanban-color-8: #b962ff52;
+  --p-kanban-color-7: #e45bdd52;
+  --p-kanban-color-simple: #8e8e8e41;
+  --p-kanban-color-shadow: #0000004d;
+	--text-highlight-background: hsla(38, 27%, 54%, 0.5);
+	--text-highlight-border-color: hsl(31, 48%, 66%);
+	--text-highlight-color: hsl(40, 20%, 90%);
+  --theme-color-translucent-015: hsla(var(--interactive-accent-hsl),0.15);
+  --stickies-color-1: #683083;
+  --stickies-color-2: #823a92;
+  --stickies-change-color: #CAF4B9;
+  --stickies-shadow-color: rgba(255, 255, 255, 0.6);
+  --tape-color: #99999967;
+  --cloze-bg-color: var(--accent-strong);
+  --cloze-decoration: none;
+  --cloze-decoration-color: red;
+  --cloze-decoration-2: dashed;
+  --cloze-decoration-color-2: var(--theme-color);
+  --cloze-bg-color-3: transparent;
+  --cloze-decoration-3: dashed;
+  --cloze-decoration-color-3: var(--theme-color);
+  --mark-highlight-strong-em: #fff7603a;
+  --strong-em-highlight-color: #a7b4ff;
+  --text-search-highlight-bg: #bb4361;
+  --strong-em-color-1: #43d3ff;
+  --strong-em-color-2: #baaaff;
+
+  --card-bg-color: gray;
+  --commander-button-color: #8D949D;
+  --scroll-bar-color-new: #8d949d33;
+  --scroll-bar-color-new2: #8d949d62;
+
+
+  --custom-color-red: 231, 130, 132;
+  --custom-color-maroon: 234, 153, 156;
+  --custom-color-peach: 239, 159, 118;
+  --custom-color-yellow: 229, 200, 144;
+  --custom-color-green: 166, 209, 137;
+  --custom-color-teal: 129, 200, 190;
+  --custom-color-sky: 153, 209, 219;
+  --custom-color-sapphire: 133, 193, 220;
+  --custom-color-blue: 140, 170, 238;
+  --custom-color-lavender: 186, 187, 241;
+  --custom-color-mauve: 202, 158, 230;
+  --text-score-color: rgba(255, 72, 72, 0.527);
+}
+
+
+
+
+/* ========================================
+Albus-1 布局
+======================================== */
+
+/* ========================================
+Albus-1.1 激活按钮高亮显示
+======================================== */
+body .mod-left-split .workspace-tab-header.is-active .workspace-tab-header-inner-icon,
+body .mod-right-split .workspace-tab-header.is-active .workspace-tab-header-inner-icon,
+body .workspace.is-left-sidedock-open .sidebar-toggle-button.mod-left .clickable-icon,
+body .workspace.is-right-sidedock-open .sidebar-toggle-button.mod-right .clickable-icon,
+body.is-focused .mod-active .workspace-tab-header.is-active .workspace-tab-header-inner-icon,
+body.is-focused .mod-active .workspace-tab-header.is-active .workspace-tab-header-inner-title,
+body .workspace-tab-header.is-active .workspace-tab-header-inner-title {
+    color: var(--color-accent);
+}
+
+/* ========================================
+Albus-1.2 标签页切换淡入动画
+======================================== */
+body  {
+  --animation: 400ms ease-in;
+}
+
+.workspace-split .workspace-tabs:not(.mod-stacked) .view-content,
+.workspace-leaf-content:not(:has(.view-content)) {
+  animation: slide-up var(--animation) forwards;
+}
+
+@keyframes slide-up {
+  0% {
+    transform: translateY(0%);
+    opacity: 0;
+  }
+
+  15% {
+    transform: translateY(0.1rem);
+    opacity: 0;
+  }
+
+  25% {
+    transform: translateY(0.15rem);
+  }
+
+  45% {
+    opacity: 0.5;
+  }
+
+  65% {
+    opacity: 0.7;
+  }
+
+  100% {
+    transform: translateY(0%);
+    opacity: 1;
+  }
+}
+
+body:not(.anp-alternate-tab-toggle):not(.anp-disable-newtab-align) .workspace-split.mod-vertical .workspace-tab-header-spacer {
+  display: none;
+}
+body:not(.anp-alternate-tab-toggle):not(.anp-disable-newtab-align) .workspace-split.mod-vertical .workspace-tab-header-new-tab {
+  margin-left: auto;
+}
+
+.anp-alternate-tab-toggle,
+.anp-default-tab,
+.anp-safari-tab-toggle {
+  --header-height: 45px;
+  --tab-stacked-header-width: var(--anp-stacked-header-width, 40px);
+}
+
+.anp-alternate-tab-toggle .workspace-tabs:not(.mod-stacked),
+.anp-safari-tab-toggle .workspace-tabs:not(.mod-stacked) {
+  --tab-background: var(--background-secondary);
+  --tab-background-active: var(--background-primary);
+  --tab-font-size: 12px;
+  --tab-height: calc(var(--header-height)*0.7);
+  --tab-max-width: 200px;
+  --tab-max-width-active: 300px ;
+}
+
+.anp-alternate-tab-toggle .workspace-ribbon.mod-left {
+  margin-top: var(--header-height);
+}
+
+.anp-alternate-tab-toggle .workspace-ribbon.mod-left:before {
+  padding-bottom: 5px;
+}
+
+.anp-alternate-tab-toggle .workspace-tabs:not(.mod-stacked) .workspace-tab-header::before,
+.anp-alternate-tab-toggle .workspace-tabs:not(.mod-stacked) .workspace-tab-header::after,
+.anp-alternate-tab-toggle .workspace .mod-root .workspace-tabs:not(.mod-stacked) .workspace-tab-header-inner::after {
+  display: none;
+}
+
+.anp-alternate-tab-toggle .mod-vertical:not(.mod-left-split):not(.mod-right-split) .workspace-tabs:not(.mod-stacked) .workspace-tab-header-container-inner,
+.anp-alternate-tab-toggle .mod-horizontal:not(.mod-left-split):not(.mod-right-split) .workspace-tabs:not(.mod-stacked) .workspace-tab-header-container-inner {
+  align-items: left;
+  justify-content: var(--anp-safari-tab-align, left);
+  gap: var(--anp-safari-tab-gap, 10px);
+  margin-top: 8px;
+}
+
+.anp-disable-newtab-align.anp-alternate-tab-toggle .mod-vertical:not(.mod-left-split):not(.mod-right-split) .workspace-tabs:not(.mod-stacked) .workspace-tab-header-container-inner,
+.anp-disable-newtab-align.anp-alternate-tab-toggle .mod-horizontal:not(.mod-left-split):not(.mod-right-split) .workspace-tabs:not(.mod-stacked) .workspace-tab-header-container-inner {
+  width: unset;
+  gap: var(--anp-safari-tab-gap, 10px);
+}
+
+
+
+.anp-alternate-tab-toggle .mod-vertical:not(.mod-left-split):not(.mod-right-split) .workspace-tabs:not(.mod-stacked) .workspace-tab-header,
+.anp-alternate-tab-toggle .mod-horizontal:not(.mod-left-split):not(.mod-right-split) .workspace-tabs:not(.mod-stacked) .workspace-tab-header {
+  background: var(--tab-background);
+  border-radius: var(--anp-safari-tab-radius, 6px);
+  box-shadow: none !important;
+  height: var(--tab-height);
+  padding: 0 !important;
+  transition: 400ms, background-color 150ms ease-in-out;
+}
+
+.anp-alternate-tab-toggle .mod-root .workspace-tabs:not(.mod-stacked) .workspace-tab-header {
+  max-width: var(--tab-max-width);
+  border: var(--anp-safari-border-width, 1px) solid var(--tab-outline-color);
+}
+
+.anp-alternate-tab-toggle.anp-alt-tab-anim-toggle .mod-root .workspace-tabs:not(.mod-stacked) .workspace-tab-header {
+  transition: 400ms, background-color 150ms ease-in-out;
+}
+
+.anp-alternate-tab-toggle .workspace-tabs:not(.mod-stacked) .workspace-tab-header:first-child {
+  margin-left: 0;
+}
+
+.anp-alternate-tab-toggle .mod-root:not(.mod-left-split):not(.mod-right-split) .workspace-tabs:not(.mod-stacked) .workspace-tab-header-inner {
+  padding: 7px 8px;
+}
+
+.anp-alternate-tab-toggle .mod-root:not(.mod-left-split):not(.mod-right-split) .workspace-tabs:not(.mod-stacked) .workspace-tab-header-inner {
+  padding: 0 0px 0 px;
+  transition: 400ms, background-color 150ms ease-in-out, max-width 400ms;
+}
+.anp-alternate-tab-toggle .mod-root:not(.mod-left-split):not(.mod-right-split) .workspace-tabs:not(.mod-stacked) .workspace-tab-header-inner,
+.anp-alternate-tab-toggle .mod-root:not(.mod-left-split):not(.mod-right-split) .workspace-tabs:not(.mod-stacked) .workspace-tab-header-inner-close-button,
+.anp-alternate-tab-toggle .mod-root:not(.mod-left-split):not(.mod-right-split) .workspace-tabs:not(.mod-stacked) .workspace-tab-header-inner-icon {
+  color: var(--text-muted);
+}
+
+.anp-alternate-tab-toggle .workspace .mod-root .workspace-tab-header-inner::after {
+  display: none;
+}
+
+.anp-alternate-tab-toggle .mod-root:not(.mod-left-split):not(.mod-right-split) .workspace-tabs:not(.mod-stacked) .workspace-tab-header.is-active {
+  flex-grow: 1.67;
+  max-width: var(--tab-max-width-active);
+  background-color: var(--background-primary);
+}
+
+.anp-alternate-tab-toggle .mod-root .workspace-tabs:not(.mod-stacked) .workspace-tab-header.is-active .workspace-tab-header-inner-title {
+  color: var(--color-accent);
+}
+
+.anp-alternate-tab-toggle .mod-root .workspace-tabs:not(.mod-stacked) .workspace-tab-header.is-active .workspace-tab-header-inner,
+.anp-alternate-tab-toggle .mod-root .workspace-tabs:not(.mod-stacked) .workspace-tab-header.is-active .workspace-tab-header-inner-title,
+.anp-alternate-tab-toggle .mod-root .workspace-tabs:not(.mod-stacked) .workspace-tab-header.is-active .workspace-tab-header-inner-close-button,
+.anp-alternate-tab-toggle .mod-root .workspace-tabs:not(.mod-stacked) .workspace-tab-header.is-active .workspace-tab-header-inner-icon {
+  color: var(--text-faint);
+}
+.anp-alternate-tab-toggle .mod-root .workspace-tabs:not(.mod-stacked) .workspace-tab-header.is-active .workspace-tab-header-inner:hover {
+  background-color: rgba(var(--ctp-surface1), 0.4);
+}
+
+.anp-alternate-tab-toggle .mod-root .workspace-tabs:not(.mod-stacked).mod-active .workspace-tab-header.is-active .workspace-tab-header-inner,
+.anp-alternate-tab-toggle .mod-root .workspace-tabs:not(.mod-stacked).mod-active .workspace-tab-header.is-active .workspace-tab-header-inner-title,
+.anp-alternate-tab-toggle .mod-root .workspace-tabs:not(.mod-stacked).mod-active .workspace-tab-header.is-active .workspace-tab-header-inner-close-button,
+.anp-alternate-tab-toggle .mod-root .workspace-tabs:not(.mod-stacked).mod-active .workspace-tab-header.is-active .workspace-tab-header-inner-icon {
+  color: var(--color-accent) !important;
+}
+
+.anp-alternate-tab-toggle .mod-root .workspace-tabs:not(.mod-stacked) .workspace-tab-header.is-active:hover {
+  background-color: var(--background-modifier-border);
+}
+
+.anp-alternate-tab-toggle .sidebar-toggle-button.mod-left,
+.anp-alternate-tab-toggle .sidebar-toggle-button.mod-right {
+  align-items: left;
+}
+
+.anp-alternate-tab-toggle .sidebar-toggle-button.mod-left .clickable-icon,
+.anp-alternate-tab-toggle .sidebar-toggle-button.mod-right .clickable-icon {
+  height: var(--tab-height);
+}
+
+.anp-colorful-frame.anp-card-layout.anp-alternate-tab-toggle .mod-vertical .workspace-tab-header {
+  --tab-text-color: var(--text-faint);
+  --tab-text-color-active: var(--text-muted);
+  --tab-text-color-focused: var(--text-muted);
+  --tab-text-color-focused-active: var(--text-muted);
+  --tab-text-color-focused-highlighted: var(--text-accent);
+  --tab-text-color-focused-active-current: var(--text-normal);
+  --icon-color: var(--text-muted);
+  --icon-color-hover: var(--text-muted);
+  --icon-color-active: var(--text-accent);
+  --icon-color-focused: var(--text-normal);
+}
+
+
+
+
+/* ========================================
+Albus-1.4 设置页面卡片样式
+======================================== */
+/* 设置界面的宽度设置 */
+.modal.mod-settings.mod-settings.mod-settings.mod-settings {
+  /* min-width: 1200px !important; */
+}
+
+/* 2024-12-17 参考Huajin的obsidian-settings-management插件的样式 https://github.com/xhuajin/obsidian-settings-management/blob/master/src/styles.css */
+/* 快捷键列表 */
+body:not(.hotkey-layout) .vertical-tabs-container .vertical-tab-content>.hotkey-list-container,
+/* 核心插件列表 */
+body:not(.plugin-layout) .vertical-tabs-container .plugin-list-plugins>div:not(.setting-item),
+/* 第三方插件列表 */
+body:not(.installed-plugin-layout) .vertical-tabs-container .installed-plugins-container {
+  display: grid;
+  gap: 15px;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+
+  /* 子项目设置 */
+  .setting-item:not(:has(~.setting-item-heading)):not(.setting-item-heading) {
+    border: 1px solid var(--background-modifier-border);
+    border-radius: 8px;
+    padding: 1em;
+  }
+
+  .setting-item:is(:has(~.setting-item-heading), .setting-item-heading) {
+    grid-column: 1 / -1;
+  }
+
+  .setting-item-info {
+
+    overflow: hidden;
+    overflow-wrap: anywhere;
+  }
+}
+
+/* 第三方插件列表 按钮微调*/
+.installed-plugins-container .setting-item.mod-toggle {
+  position: relative;
+  display: flex;
+  flex-flow: column nowrap;
+
+  .setting-item-info {
+    flex: 2 0 auto;
+    width: 100%;
+    margin-left: 10px;
+  }
+}
+
+.installed-plugins-container .setting-item-control {
+  flex: 0;
+  display: flex;
+  flex-flow: row nowrap;
+  width: 100%;
+  right: 0px;
+  justify-content: right;
+}
+
+
+/* ========================================
+Albus-1.5 隐藏滚动条
+======================================== */
+body:is(.btlfc-s-bar-switch) ::-webkit-scrollbar-thumb  {
+  display: none;
+}
+
+
+
+
+/* ========================================
+Albus-1.6 编辑模式下光标所在行高亮显示
+======================================== */
+/* Active line background */
+.markdown-source-view.mod-cm6 .cm-line.cm-active{
+  background-color: rgba(var(--mono-rgb-100), 0.05)
+}
+
+/*Active line number */
+
+.markdown-source-view.mod-cm6  .cm-lineNumbers .cm-gutterElement.cm-active {
+font-weight: 600;
+color: grey;
+}
+
+/* ========================================
+Albus-1.7 彩虹文件目录
+======================================== */
+.workspace-leaf-content[data-type="file-explorer"] {
+  --folder-bg-opacity: var(--folder-bg-opacity-setting, 0.08);
+  --folder-text-opacity: var(--folder-text-opacity-setting, 0.85);
+  --folder-hover-opacity: var(--folder-hover-opacity-setting, 0.12);
+  --folder-sub-bg-opacity: var(--folder-sub-bg-opacity-setting, 0.04);
+  --folder-sub-text-opacity: var(--folder-sub-text-opacity-setting, 0.7);
+
+  /* 背景色 - 基于主题的暖色调 */
+  --folder-bg-1: rgba(var(--color-red-rgb), var(--folder-bg-opacity));
+  --folder-bg-2: rgba(var(--color-blue-rgb), var(--folder-bg-opacity));
+  --folder-bg-3: rgba(var(--color-green-rgb), var(--folder-bg-opacity));
+  --folder-bg-4: rgba(var(--color-orange-rgb), var(--folder-bg-opacity));
+  --folder-bg-5: rgba(var(--color-purple-rgb), var(--folder-bg-opacity));
+  --folder-bg-6: rgba(var(--color-cyan-rgb), var(--folder-bg-opacity));
+  --folder-bg-7: rgba(var(--color-pink-rgb), var(--folder-bg-opacity));
+
+  /* 字体色 - 基于主题的深色系 */
+  --folder-text-1: rgba(var(--color-red-rgb), var(--folder-text-opacity));
+  --folder-text-2: rgba(var(--color-blue-rgb), var(--folder-text-opacity));
+  --folder-text-3: rgba(var(--color-green-rgb), var(--folder-text-opacity));
+  --folder-text-4: rgba(var(--color-orange-rgb), var(--folder-text-opacity));
+  --folder-text-5: rgba(var(--color-purple-rgb), var(--folder-text-opacity));
+  --folder-text-6: rgba(var(--color-cyan-rgb), var(--folder-text-opacity));
+  --folder-text-7: rgba(var(--color-pink-rgb), var(--folder-text-opacity));
+
+  /* 悬停状态 - 稍微加深背景 */
+  --folder-hover-1: rgba(var(--color-red-rgb), var(--folder-hover-opacity));
+  --folder-hover-2: rgba(var(--color-blue-rgb), var(--folder-hover-opacity));
+  --folder-hover-3: rgba(var(--color-green-rgb), var(--folder-hover-opacity));
+  --folder-hover-4: rgba(var(--color-orange-rgb), var(--folder-hover-opacity));
+  --folder-hover-5: rgba(var(--color-purple-rgb), var(--folder-hover-opacity));
+  --folder-hover-6: rgba(var(--color-cyan-rgb), var(--folder-hover-opacity));
+  --folder-hover-7: rgba(var(--color-pink-rgb), var(--folder-hover-opacity));
+
+  /* 子目录淡化色 */
+  --folder-sub-bg-1: rgba(var(--color-red-rgb), var(--folder-sub-bg-opacity));
+  --folder-sub-bg-2: rgba(var(--color-blue-rgb), var(--folder-sub-bg-opacity));
+  --folder-sub-bg-3: rgba(var(--color-green-rgb), var(--folder-sub-bg-opacity));
+  --folder-sub-bg-4: rgba(
+    var(--color-orange-rgb),
+    var(--folder-sub-bg-opacity)
+  );
+  --folder-sub-bg-5: rgba(
+    var(--color-purple-rgb),
+    var(--folder-sub-bg-opacity)
+  );
+  --folder-sub-bg-6: rgba(var(--color-cyan-rgb), var(--folder-sub-bg-opacity));
+  --folder-sub-bg-7: rgba(var(--color-pink-rgb), var(--folder-sub-bg-opacity));
+
+  --folder-sub-text-1: rgba(
+    var(--color-red-rgb),
+    var(--folder-sub-text-opacity)
+  );
+  --folder-sub-text-2: rgba(
+    var(--color-blue-rgb),
+    var(--folder-sub-text-opacity)
+  );
+  --folder-sub-text-3: rgba(
+    var(--color-green-rgb),
+    var(--folder-sub-text-opacity)
+  );
+  --folder-sub-text-4: rgba(
+    var(--color-orange-rgb),
+    var(--folder-sub-text-opacity)
+  );
+  --folder-sub-text-5: rgba(
+    var(--color-purple-rgb),
+    var(--folder-sub-text-opacity)
+  );
+  --folder-sub-text-6: rgba(
+    var(--color-cyan-rgb),
+    var(--folder-sub-text-opacity)
+  );
+  --folder-sub-text-7: rgba(
+    var(--color-pink-rgb),
+    var(--folder-sub-text-opacity)
+  );
+}
+
+/* 顶级目录配色 - 根据序号循环展示7种颜色 */
+.nav-files-container
+  > div
+  > .tree-item.nav-folder:nth-child(7n + 1)
+  > .nav-folder-title {
+  background-color: var(--folder-bg-1);
+  color: var(--folder-text-1);
+  --nav-collapse-icon-color: var(--folder-text-1);
+  --icon-color: var(--nav-collapse-icon-color);
+}
+
+.nav-files-container
+  > div
+  > .tree-item.nav-folder:nth-child(7n + 2)
+  > .nav-folder-title {
+  background-color: var(--folder-bg-2);
+  color: var(--folder-text-2);
+  --nav-collapse-icon-color: var(--folder-text-2);
+  --icon-color: var(--nav-collapse-icon-color);
+}
+
+.nav-files-container
+  > div
+  > .tree-item.nav-folder:nth-child(7n + 3)
+  > .nav-folder-title {
+  background-color: var(--folder-bg-3);
+  color: var(--folder-text-3);
+  --nav-collapse-icon-color: var(--folder-text-3);
+  --icon-color: var(--nav-collapse-icon-color);
+}
+
+.nav-files-container
+  > div
+  > .tree-item.nav-folder:nth-child(7n + 4)
+  > .nav-folder-title {
+  background-color: var(--folder-bg-4);
+  color: var(--folder-text-4);
+  --nav-collapse-icon-color: var(--folder-text-4);
+  --icon-color: var(--nav-collapse-icon-color);
+}
+
+.nav-files-container
+  > div
+  > .tree-item.nav-folder:nth-child(7n + 5)
+  > .nav-folder-title {
+  background-color: var(--folder-bg-5);
+  color: var(--folder-text-5);
+  --nav-collapse-icon-color: var(--folder-text-5);
+  --icon-color: var(--nav-collapse-icon-color);
+}
+
+.nav-files-container
+  > div
+  > .tree-item.nav-folder:nth-child(7n + 6)
+  > .nav-folder-title {
+  background-color: var(--folder-bg-6);
+  color: var(--folder-text-6);
+  --nav-collapse-icon-color: var(--folder-text-6);
+  --icon-color: var(--nav-collapse-icon-color);
+}
+
+.nav-files-container
+  > div
+  > .tree-item.nav-folder:nth-child(7n)
+  > .nav-folder-title {
+  background-color: var(--folder-bg-7);
+  color: var(--folder-text-7);
+  --nav-collapse-icon-color: var(--folder-text-7);
+  --icon-color: var(--nav-collapse-icon-color);
+}
+
+/* 子目录配色 - 继承父目录颜色但更淡 */
+.nav-files-container
+  > div
+  > .tree-item.nav-folder:nth-child(7n + 1)
+  .tree-item-children
+  .nav-folder-title {
+  background-color: var(--folder-sub-bg-1);
+  color: var(--folder-sub-text-1);
+  --nav-collapse-icon-color: var(--folder-text-1);
+  --icon-color: var(--nav-collapse-icon-color);
+}
+
+.nav-files-container
+  > div
+  > .tree-item.nav-folder:nth-child(7n + 2)
+  .tree-item-children
+  .nav-folder-title {
+  background-color: var(--folder-sub-bg-2);
+  color: var(--folder-sub-text-2);
+  --nav-collapse-icon-color: var(--folder-text-2);
+  --icon-color: var(--nav-collapse-icon-color);
+}
+
+.nav-files-container
+  > div
+  > .tree-item.nav-folder:nth-child(7n + 3)
+  .tree-item-children
+  .nav-folder-title {
+  background-color: var(--folder-sub-bg-3);
+  color: var(--folder-sub-text-3);
+  --nav-collapse-icon-color: var(--folder-text-3);
+  --icon-color: var(--nav-collapse-icon-color);
+}
+
+.nav-files-container
+  > div
+  > .tree-item.nav-folder:nth-child(7n + 4)
+  .tree-item-children
+  .nav-folder-title {
+  background-color: var(--folder-sub-bg-4);
+  color: var(--folder-sub-text-4);
+  --nav-collapse-icon-color: var(--folder-text-4);
+  --icon-color: var(--nav-collapse-icon-color);
+}
+
+.nav-files-container
+  > div
+  > .tree-item.nav-folder:nth-child(7n + 5)
+  .tree-item-children
+  .nav-folder-title {
+  background-color: var(--folder-sub-bg-5);
+  color: var(--folder-sub-text-5);
+  --nav-collapse-icon-color: var(--folder-text-5);
+  --icon-color: var(--nav-collapse-icon-color);
+}
+
+.nav-files-container
+  > div
+  > .tree-item.nav-folder:nth-child(7n + 6)
+  .tree-item-children
+  .nav-folder-title {
+  background-color: var(--folder-sub-bg-6);
+  color: var(--folder-sub-text-6);
+  --nav-collapse-icon-color: var(--folder-text-6);
+  --icon-color: var(--nav-collapse-icon-color);
+}
+
+.nav-files-container
+  > div
+  > .tree-item.nav-folder:nth-child(7n)
+  .tree-item-children
+  .nav-folder-title {
+  background-color: var(--folder-sub-bg-7);
+  color: var(--folder-sub-text-7);
+  --nav-collapse-icon-color: var(--folder-text-7);
+  --icon-color: var(--nav-collapse-icon-color);
+}
+
+/* 顶级目录悬停效果 */
+.nav-files-container
+  > div
+  > .tree-item.nav-folder:nth-child(7n + 1)
+  > .nav-folder-title:hover {
+  background-color: var(--folder-hover-1);
+}
+
+.nav-files-container
+  > div
+  > .tree-item.nav-folder:nth-child(7n + 2)
+  > .nav-folder-title:hover {
+  background-color: var(--folder-hover-2);
+}
+
+.nav-files-container
+  > div
+  > .tree-item.nav-folder:nth-child(7n + 3)
+  > .nav-folder-title:hover {
+  background-color: var(--folder-hover-3);
+}
+
+.nav-files-container
+  > div
+  > .tree-item.nav-folder:nth-child(7n + 4)
+  > .nav-folder-title:hover {
+  background-color: var(--folder-hover-4);
+}
+
+.nav-files-container
+  > div
+  > .tree-item.nav-folder:nth-child(7n + 5)
+  > .nav-folder-title:hover {
+  background-color: var(--folder-hover-5);
+}
+
+.nav-files-container
+  > div
+  > .tree-item.nav-folder:nth-child(7n + 6)
+  > .nav-folder-title:hover {
+  background-color: var(--folder-hover-6);
+}
+
+.nav-files-container
+  > div
+  > .tree-item.nav-folder:nth-child(7n)
+  > .nav-folder-title:hover {
+  background-color: var(--folder-hover-7);
+}
+
+
+
+/* ========================================
+Albus-2 排版
+======================================== */
+
+
+/* ========================================
+Albus-2.1 默认阅读模式下隐藏文档属性
+======================================== */
+.doc--hide body {
+    --metadata-display-reading: none ;
+}
+
+.doc--hide .workspace-leaf-content[data-mode="preview"]
+:is(.markdown-preview-view,.markdown-rendered)
+.metadata-container{
+    display: none ;
+}
+
+
+.doc--hide .workspace-leaf-content[data-mode="preview"]
+:is(.markdown-preview-view,.markdown-rendered).show-property
+.metadata-container{
+    display: unset  ;
+}
+
+
+.doc--hide .workspace-leaf-content[data-mode="source"]
+.markdown-source-view.hide-property
+.metadata-container{
+    display: none ;
+}
+
+
+.doc--hide :is(.markdown-preview-view,.markdown-rendered) {
+  & div[data-property-key="anything_is_ok"] {
+    display:none;
+  }
+}
+
+.doc--hide :is(.markdown-preview-view,.markdown-rendered) .metadata-property[data-property-key="cssclasses"],
+.doc--hide :is(.markdown-preview-view,.markdown-rendered) .metadata-property[data-property-key="cssclass"] {
+  display: none;
+}
+
+
+.doc--hide :is(.markdown-preview-view,.markdown-rendered).anything_is_ok {
+  & div[data-property-key="anything_is_ok"] {
+    display:none;
+  }
+}
+
+.doc--hide :is(.markdown-preview-view,.markdown-rendered).hide-lex .metadata-property[data-property-key="lex"]
+{
+  display: none;
+}
+
+.doc--hide .is-live-preview.hide-lex .metadata-property[data-property-key="lex"] {
+  display: none;
+}
+
+
+
+/* 确保容器正确约束 */
+/* 改进后的CSS代码 */
+
+.doc--ball .workspace-leaf-content {
+  position: relative;
+  overflow: visible;
+}
+
+.doc--ball .metadata-properties-heading {
+  display: none !important;
+}
+
+
+.doc--ball .🟢 .metadata-container{
+  background-color: #56cf8e !important;
+}
+
+.doc--ball .🟡 .metadata-container{
+  background-color: #ffce65 !important;
+}
+
+.doc--ball .🟠 .metadata-container{
+  background-color: #fc8747 !important;
+}
+
+.doc--ball .🔴 .metadata-container{
+  background-color: #ec4558 !important;
+}
+
+.doc--ball .metadata-container {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  width: 36px;
+  height: 36px;
+  z-index: 100;
+  overflow: hidden;
+  background: var(--color-accent);
+  border-radius: 100%;
+  box-shadow: 
+    0 3px 10px rgba(0,0,0,0.1),
+    0 0 0 1px var(--background-modifier-border),
+    inset 0 1px 0 rgba(255,255,255,0.2);
+  cursor: pointer;
+  transition: 
+    width 0.35s cubic-bezier(0.18, 1.25, 0.4, 1),
+    height 0.35s cubic-bezier(0.18, 1.25, 0.4, 1),
+    border-radius 0.3s ease 0.05s;
+}
+
+.doc--ball .metadata-content {
+  opacity: 0;
+  padding: 0 !important;
+  width: 360px;
+  height: auto !important;
+  transition: 
+    opacity 0.25s ease 0.1s,
+    padding 0.25s ease 0.1s;
+  pointer-events: none;
+  position: relative;
+  background: var(--background-primary);
+  border-radius: 12px;
+  max-height: 0;
+  overflow: hidden;
+}
+
+/* 悬停和焦点状态 */
+.doc--ball .metadata-container:hover,
+.doc--ball .metadata-container:focus-within,
+.doc--ball .metadata-container.is-active {
+  width: 360px;
+  height: auto !important;
+  border: none !important;
+  border-radius: 13px;
+  transition-delay: 0s;
+  padding: 0 !important;
+  margin: 0 !important;
+  box-shadow: 
+    0 12px 30px rgba(0, 0, 0, 0.3),
+    inset 0 0 16px rgba(255, 255, 255, 0.3),
+    inset 0 0 2px rgba(255, 255, 255, 0.7);
+}
+
+.doc--ball .metadata-container:hover .metadata-content,
+.doc--ball .metadata-container:focus-within .metadata-content,
+.doc--ball .metadata-container.is-active .metadata-content {
+  opacity: 1;
+  padding: 20px !important;
+  max-height: none !important; /* 限制最大高度避免过度展开 */
+  pointer-events: auto;
+  transition: 
+    opacity 0.3s ease 0.15s,
+    padding 0.3s ease 0.15s,
+    max-height 0.5s ease;
+}
+
+/* 触发指示器 */
+.doc--ball .metadata-trigger {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.2);
+  z-index: 101;
+  pointer-events: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: 
+    opacity 0.2s ease, 
+    transform 0.4s cubic-bezier(0.68, -0.55, 0.27, 1.55);
+}
+
+.doc--ball .metadata-trigger::before {
+  content: "i";
+  font-size: 16px;
+  font-weight: 700;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  color: white;
+}
+
+.doc--ball .metadata-container:hover .metadata-trigger,
+.doc--ball .metadata-container:focus-within .metadata-trigger,
+.doc--ball .metadata-container.is-active .metadata-trigger {
+  opacity: 0;
+  transform: scale(1.5) rotate(90deg);
+}
+
+/* 增强的悬停保护区域 */
+.doc--ball .metadata-container::before {
+  content: "";
+  position: absolute;
+  top: -15px;
+  right: -15px;
+  bottom: -15px;
+  left: -15px;
+  z-index: -1;
+  pointer-events: auto;
+}
+
+/* 确保子元素不会破坏hover状态 */
+.doc--ball .metadata-content * {
+  pointer-events: auto;
+}
+
+/* 移动设备友好优化 */
+@media (max-width: 400px) {
+  .doc--ball .metadata-container:hover,
+  .doc--ball .metadata-container:focus-within,
+  .doc--ball .metadata-container.is-active {
+    width: calc(100vw - 40px);
+    right: 20px;
+  }
+  
+  .doc--ball .metadata-content {
+    width: 100%;
+  }
+}
+
+/* 暗色模式优化 */
+.theme-dark .doc--ball .metadata-container {
+  box-shadow: 
+    0 3px 15px rgba(0,0,0,0.4),
+    0 0 0 1px var(--background-modifier-border),
+    inset 0 1px 0 rgba(255,255,255,0.1);
+}
+
+/* 无障碍访问改进 */
+.doc--ball .metadata-container:focus {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 2px;
+}
+
+/* ========================================
+Albus-2.2 图片添加 dark 参数可在深色模式下反色
+======================================== */
+.theme-dark img[alt*="dark"] {
+  filter: invert(1) hue-rotate(180deg) !important;
+}
+
+.theme-dark .image-embed[src*="#dark"] img {
+  filter: invert(1) hue-rotate(180deg) !important;
+}
+
+
+
+/* ========================================
+Albus-2.4 Blue Topaz 图片排版方案 (已调整兼容反色参数)
+======================================== */
+/* ============ */
+/*image position*/
+/* ============ */
+img[alt$="left"]:not([class*="emoji"]),
+img[alt$="Left"]:not([class*="emoji"]),
+img[alt$="LEFT"]:not([class*="emoji"]),
+img[alt$="L"]:not([class*="emoji"]),
+.markdown-source-view.mod-cm6 img[alt$="left"]:not([class*="emoji"]),
+.markdown-source-view.mod-cm6 img[alt$="Left"]:not([class*="emoji"]),
+.markdown-source-view.mod-cm6 img[alt$="LEFT"]:not([class*="emoji"]),
+.markdown-source-view.mod-cm6 img[alt$="L"]:not([class*="emoji"]),
+.internal-embed.image-embed.is-loaded[alt$="left"] img[alt$="left"]:not([class*="emoji"]),
+.internal-embed.image-embed.is-loaded[alt$="Left"] img[alt$="Left"]:not([class*="emoji"]),
+.internal-embed.image-embed.is-loaded[alt$="LEFT"] img[alt$="LEFT"]:not([class*="emoji"]),
+.internal-embed.image-embed.is-loaded[alt$="L"] img[alt$="L"]:not([class*="emoji"]),
+body:not(.image-zoom) .view-content img[alt$="left"]:not([class*="emoji"]),
+body:not(.image-zoom) .view-content img[alt$="Left"]:not([class*="emoji"]),
+body:not(.image-zoom) .view-content img[alt$="LEFT"]:not([class*="emoji"]),
+body:not(.image-zoom) .view-content img[alt$="L"]:not([class*="emoji"]) {
+  margin: auto !important;
+  margin-left: 0 !important;
+  display: block;
+}
+
+img[alt$="right"]:not([class*="emoji"]),
+img[alt$="Right"]:not([class*="emoji"]),
+img[alt$="RIGHT"]:not([class*="emoji"]),
+img[alt$="R"]:not([class*="emoji"]),
+.markdown-source-view.mod-cm6 img[alt$="right"]:not([class*="emoji"]),
+.markdown-source-view.mod-cm6 img[alt$="Right"]:not([class*="emoji"]),
+.markdown-source-view.mod-cm6 img[alt$="RIGHT"]:not([class*="emoji"]),
+.markdown-source-view.mod-cm6 img[alt$="R"]:not([class*="emoji"]),
+.internal-embed.image-embed.is-loaded[alt$="right"] img[alt$="right"]:not([class*="emoji"]),
+.internal-embed.image-embed.is-loaded[alt$="Right"] img[alt$="Right"]:not([class*="emoji"]),
+.internal-embed.image-embed.is-loaded[alt$="RIGHT"] img[alt$="RIGHT"]:not([class*="emoji"]),
+.internal-embed.image-embed.is-loaded[alt$="R"] img[alt$="R"]:not([class*="emoji"]),
+body:not(.image-zoom) .view-content img[alt$="right"]:not([class*="emoji"]),
+body:not(.image-zoom) .view-content img[alt$="Right"]:not([class*="emoji"]),
+body:not(.image-zoom) .view-content img[alt$="RIGHT"]:not([class*="emoji"]),
+body:not(.image-zoom) .view-content img[alt$="R"]:not([class*="emoji"]) {
+  margin: auto !important;
+  margin-right: 0 !important;
+  display: block;
+}
+
+img[alt$="centre"]:not([class*="emoji"]),
+img[alt$="center"]:not([class*="emoji"]),
+img[alt$="CENTRE"]:not([class*="emoji"]),
+img[alt$="CENTER"]:not([class*="emoji"]),
+img[alt$="Center"]:not([class*="emoji"]),
+img[alt$="Centre"]:not([class*="emoji"]),
+img[alt$="C"]:not([class*="emoji"]),
+.markdown-source-view.mod-cm6 img[alt$="centre"]:not([class*="emoji"]),
+.markdown-source-view.mod-cm6 img[alt$="center"]:not([class*="emoji"]),
+.markdown-source-view.mod-cm6 img[alt$="Centre"]:not([class*="emoji"]),
+.markdown-source-view.mod-cm6 img[alt$="Center"]:not([class*="emoji"]),
+.markdown-source-view.mod-cm6 img[alt$="CENTRE"]:not([class*="emoji"]),
+.markdown-source-view.mod-cm6 img[alt$="CENTER"]:not([class*="emoji"]),
+.markdown-source-view.mod-cm6 img[alt$="C"]:not([class*="emoji"]),
+.internal-embed.image-embed.is-loaded[alt$="centre"] img[alt$="right"]:not([class*="emoji"]),
+.internal-embed.image-embed.is-loaded[alt$="center"] img[alt$="Right"]:not([class*="emoji"]),
+.internal-embed.image-embed.is-loaded[alt$="Centre"] img[alt$="RIGHT"]:not([class*="emoji"]),
+.internal-embed.image-embed.is-loaded[alt$="Center"] img[alt$="R"]:not([class*="emoji"]),
+.internal-embed.image-embed.is-loaded[alt$="CENTRE"] img[alt$="Right"]:not([class*="emoji"]),
+.internal-embed.image-embed.is-loaded[alt$="CENTER"] img[alt$="RIGHT"]:not([class*="emoji"]),
+.internal-embed.image-embed.is-loaded[alt$="C"] img[alt$="R"]:not([class*="emoji"]),
+body:not(.image-zoom) .view-content img[alt$="centre"]:not([class*="emoji"]),
+body:not(.image-zoom) .view-content img[alt$="center"]:not([class*="emoji"]),
+body:not(.image-zoom) .view-content img[alt$="Centre"]:not([class*="emoji"]),
+body:not(.image-zoom) .view-content img[alt$="Center"]:not([class*="emoji"]),
+body:not(.image-zoom) .view-content img[alt$="CENTRE"]:not([class*="emoji"]),
+body:not(.image-zoom) .view-content img[alt$="CENTER"]:not([class*="emoji"]),
+body:not(.image-zoom) .view-content img[alt$="C"]:not([class*="emoji"]) {
+  margin: auto !important;
+  display: block;
+}
+
+img[alt$="inline"]:not([class*="emoji"]),
+img[alt$="Inline"]:not([class*="emoji"]),
+img[alt$="INLINE"]:not([class*="emoji"]),
+img[alt$="inl"]:not([class*="emoji"]),
+img[alt$="INL"]:not([class*="emoji"]),
+img[alt$="Inl"]:not([class*="emoji"]) {
+  display: inline !important;
+  padding: 0.05em 0.05em !important;
+  vertical-align: bottom;
+}
+
+img[alt$="inlineL"]:not([class*="emoji"]),
+img[alt$="InlineL"]:not([class*="emoji"]),
+img[alt$="INLINEL"]:not([class*="emoji"]),
+img[alt$="inlL"]:not([class*="emoji"]),
+img[alt$="INLL"]:not([class*="emoji"]),
+img[alt$="InlL"]:not([class*="emoji"]) {
+  float: left;
+  padding: 0.5em 0.5em 0.5em 0.5em !important;
+}
+
+img[alt$="inlineR"]:not([class*="emoji"]),
+img[alt$="InlineR"]:not([class*="emoji"]),
+img[alt$="INLINER"]:not([class*="emoji"]),
+img[alt$="inlR"]:not([class*="emoji"]),
+img[alt$="INLR"]:not([class*="emoji"]),
+img[alt$="InlR"]:not([class*="emoji"]) {
+  float: right;
+  padding: 0.5em 0.5em 0.5em 0.5em !important;
+}
+
+img.excalidraw-svg-right,
+img.excalidraw-svg-Right,
+img.excalidraw-svg-RIGHT,
+img.excalidraw-svg-R {
+  float: right !important;
+}
+
+img.excalidraw-svg-left,
+img.excalidraw-svg-Left,
+img.excalidraw-svg-LEFT,
+img.excalidraw-svg-L {
+  float: left !important;
+}
+
+img.excalidraw-svg-right,
+img.excalidraw-svg-Right,
+img.excalidraw-svg-RIGHT,
+img.excalidraw-svg-R,
+img.excalidraw-svg-left,
+img.excalidraw-svg-Left,
+img.excalidraw-svg-LEFT,
+img.excalidraw-svg-L {
+  display: table;
+  width: 100%
+}
+
+/*=================图片自适应横排==================/
+/* image-grid-1 */
+/* adapted from https://github.com/Lithou/Sandbox/blob/main/.obsidian/snippets/pub-Image%20Flags.css */
+body span[alt*="+grid"] {
+  display: table-cell;
+  vertical-align: middle;
+  padding: 5px;
+}
+
+.markdown-source-view.is-live-preview .internal-embed.image-embed.is-loaded[alt*="+grid"] {
+  display: inline-table;
+  vertical-align: middle;
+  max-width: 25%;
+}
+
+/* cssclass: image-grid */
+/* image-grid-2 */
+/* adapted from https://github.com/iEchoxu/obsidian_orange/blob/main/.obsidian/snippets/image-grid.css */
+/* description.zh: 在图片格式里添加 🔸|+grid 使复数的图片排成一行, e.g. ![[*.jpg|+grid]] 。或者在YAML种输入 ❗cssclass：img-grid❗最好安装 Contextual Typography 插件实现更好的并排效果 */
+
+.img-grid :is(.markdown-preview-section,.markdown-rendered)>div>p>.image-embed[alt*="."]:last-child {
+  padding-right: 0;
+}
+.img-grid :is(.markdown-preview-section,.markdown-rendered)>div>p>.image-embed[alt*="."]:first-child {
+  padding-left: 0;
+}
+.img-grid :is(.markdown-preview-section,.markdown-rendered)>div hr {
+  width: 100%;
+}
+.img-grid span.image-embed[alt*="."] {
+  display: table-cell;
+}
+.img-grid img[alt*="."] {
+  max-height: 100vh;
+  object-fit: cover;
+}
+
+.img-grid .markdown-preview-section .el-embed-image img:not([width]),.img-grid .markdown-preview-section video{
+  width:100%
+}
+.img-grid .markdown-preview-section>.el-embed-image>p{
+  display:grid;
+  grid-column-gap:0.5rem;
+  grid-row-gap:0;
+  grid-template-columns:repeat(auto-fit,minmax(0,1fr))
+}
+.img-grid .markdown-preview-section>.el-embed-image>p>br{
+  display:none
+}
+.img-grid .markdown-preview-section>.el-embed-image>p>img{
+  object-fit:cover;
+  align-self:stretch
+}
+.img-grid .markdown-preview-section>.el-embed-image>p>.internal-embed img{
+  object-fit:cover;
+  height:100%
+}
+
+.img-grid-ratio .markdown-preview-section>.el-embed-image>p>.internal-embed img
+,.img-grid.img-grid-ratio .markdown-preview-section>.el-embed-image>p>.internal-embed img{
+  object-fit:contain;
+  height:100%;
+  align-self:center
+}
+@media (max-width:400pt){
+  .el-embed-image{
+    margin-top:.25rem
+  }
+  .img-grid .markdown-preview-section>.el-embed-image>p{
+    grid-column-gap:0.25rem
+  }
+}
+
+/* img captions */
+/* modified from Discordian theme by @radekkozak */
+:is(.markdown-preview-view,.markdown-rendered,.markdown-source-view.mod-cm6.is-live-preview) .image-embed[src*="center"],
+:is(.markdown-preview-view,.markdown-rendered,.markdown-source-view.mod-cm6.is-live-preview) .image-embed[src*="centre"],
+:is(.markdown-preview-view,.markdown-rendered,.markdown-source-view.mod-cm6.is-live-preview) .image-embed[src*="Centre"],
+:is(.markdown-preview-view,.markdown-rendered,.markdown-source-view.mod-cm6.is-live-preview) .image-embed[src*="Center"],
+:is(.markdown-preview-view,.markdown-rendered,.markdown-source-view.mod-cm6.is-live-preview) .image-embed[src*="CENTRE"],
+:is(.markdown-preview-view,.markdown-rendered,.markdown-source-view.mod-cm6.is-live-preview) .image-embed[src*="CENTER"],
+:is(.markdown-preview-view,.markdown-rendered,.markdown-source-view.mod-cm6.is-live-preview) .image-embed[src*="C"] {
+  clear: both;
+  margin: 0 auto !important;
+  width: fit-content;
+  display: block;
+}
+
+:is(.markdown-preview-view,.markdown-rendered,.markdown-source-view.mod-cm6.is-live-preview) .image-embed[src*="center"]::after,
+:is(.markdown-preview-view,.markdown-rendered,.markdown-source-view.mod-cm6.is-live-preview) .image-embed[src*="centre"]::after,
+:is(.markdown-preview-view,.markdown-rendered,.markdown-source-view.mod-cm6.is-live-preview) .image-embed[src*="Centre"]::after,
+:is(.markdown-preview-view,.markdown-rendered,.markdown-source-view.mod-cm6.is-live-preview) .image-embed[src*="Center"]::after,
+:is(.markdown-preview-view,.markdown-rendered,.markdown-source-view.mod-cm6.is-live-preview) .image-embed[src*="CENTRE"]::after,
+:is(.markdown-preview-view,.markdown-rendered,.markdown-source-view.mod-cm6.is-live-preview) .image-embed[src*="CENTER"]::after,
+:is(.markdown-preview-view,.markdown-rendered,.markdown-source-view.mod-cm6.is-live-preview) .image-embed[src*="C"]::after {
+  content: attr(alt);
+  margin: 0.5rem 0;
+  display: block;
+  caption-side: bottom;
+  text-align: center;
+  font-size: 0.85rem;
+}
+
+:is(.markdown-preview-view,.markdown-rendered,.markdown-source-view.mod-cm6.is-live-preview) .image-embed[src*="left"],
+:is(.markdown-preview-view,.markdown-rendered,.markdown-source-view.mod-cm6.is-live-preview) .image-embed[src*="LEFT"],
+:is(.markdown-preview-view,.markdown-rendered,.markdown-source-view.mod-cm6.is-live-preview) .image-embed[src*="Left"],
+:is(.markdown-preview-view,.markdown-rendered,.markdown-source-view.mod-cm6.is-live-preview) .image-embed[src*="L"] {
+  position: relative;
+  float: left;
+  margin: 0.5rem 1rem 0.5rem 0 !important;
+  clear: both;
+  display: table;
+}
+
+:is(.markdown-preview-view,.markdown-rendered,.markdown-source-view.mod-cm6.is-live-preview) .image-embed[src*="left"]::after,
+:is(.markdown-preview-view,.markdown-rendered,.markdown-source-view.mod-cm6.is-live-preview) .image-embed[src*="LEFT"]::after,
+:is(.markdown-preview-view,.markdown-rendered,.markdown-source-view.mod-cm6.is-live-preview) .image-embed[src*="Left"]::after,
+:is(.markdown-preview-view,.markdown-rendered,.markdown-source-view.mod-cm6.is-live-preview) .image-embed[src*="L"]::after {
+  content: attr(alt);
+  padding: 0 0.5rem;
+  margin: 0.5rem 0 1rem;
+  display: table-caption;
+  caption-side: bottom;
+  text-align: center;
+  font-size: 0.85rem;
+}
+
+:is(.markdown-preview-view,.markdown-rendered,.markdown-source-view.mod-cm6.is-live-preview) .image-embed[src*="right"],
+:is(.markdown-preview-view,.markdown-rendered,.markdown-source-view.mod-cm6.is-live-preview) .image-embed[src*="RIGHT"],
+:is(.markdown-preview-view,.markdown-rendered,.markdown-source-view.mod-cm6.is-live-preview) .image-embed[src*="Right"],
+:is(.markdown-preview-view,.markdown-rendered,.markdown-source-view.mod-cm6.is-live-preview) .image-embed[src*="R"] {
+  position: relative;
+  float: right;
+  margin: 0.5rem 0 0.5rem 1rem !important;
+  clear: both;
+  display: table;
+}
+
+:is(.markdown-preview-view,.markdown-rendered,.markdown-source-view.mod-cm6.is-live-preview) .image-embed[src*="right"]::after,
+:is(.markdown-preview-view,.markdown-rendered,.markdown-source-view.mod-cm6.is-live-preview) .image-embed[src*="RIGHT"]::after,
+:is(.markdown-preview-view,.markdown-rendered,.markdown-source-view.mod-cm6.is-live-preview) .image-embed[src*="Right"]::after,
+:is(.markdown-preview-view,.markdown-rendered,.markdown-source-view.mod-cm6.is-live-preview) .image-embed[src*="R"]::after {
+  content: attr(alt);
+  padding: 0 0.5rem;
+  margin: 0.5rem 0 1rem;
+  display: table-caption;
+  caption-side: bottom;
+  text-align: center;
+  font-size: 0.85rem;
+}
+
+:is(.markdown-preview-view,.markdown-rendered,.markdown-source-view.mod-cm6.is-live-preview) .image-embed[src*="inline"],
+:is(.markdown-preview-view,.markdown-rendered,.markdown-source-view.mod-cm6.is-live-preview) .image-embed[src*="Inline"],
+:is(.markdown-preview-view,.markdown-rendered,.markdown-source-view.mod-cm6.is-live-preview) .image-embed[src*="INLINE"],
+:is(.markdown-preview-view,.markdown-rendered,.markdown-source-view.mod-cm6.is-live-preview) .image-embed[src*="inl"],
+:is(.markdown-preview-view,.markdown-rendered,.markdown-source-view.mod-cm6.is-live-preview) .image-embed[src*="INL"],
+:is(.markdown-preview-view,.markdown-rendered,.markdown-source-view.mod-cm6.is-live-preview) .image-embed[src*="Inl"] {
+  clear: both;
+  margin: 0 auto !important;
+  width: fit-content;
+  display: inline-table;
+}
+
+:is(.markdown-preview-view,.markdown-rendered,.markdown-source-view.mod-cm6.is-live-preview) .image-embed[src*="inline"]::after,
+:is(.markdown-preview-view,.markdown-rendered,.markdown-source-view.mod-cm6.is-live-preview) .image-embed[src*="Inline"]::after,
+:is(.markdown-preview-view,.markdown-rendered,.markdown-source-view.mod-cm6.is-live-preview) .image-embed[src*="INLINE"]::after,
+:is(.markdown-preview-view,.markdown-rendered,.markdown-source-view.mod-cm6.is-live-preview) .image-embed[src*="inl"]::after,
+:is(.markdown-preview-view,.markdown-rendered,.markdown-source-view.mod-cm6.is-live-preview) .image-embed[src*="INL"]::after,
+:is(.markdown-preview-view,.markdown-rendered,.markdown-source-view.mod-cm6.is-live-preview) .image-embed[src*="Inl"]::after {
+  content: attr(alt);
+  padding: 0 0.7em;
+  margin: 0.5rem 0;
+  display: block;
+  caption-side: bottom;
+  text-align: center;
+  font-size: 0.85rem;
+}
+
+/* ========================================
+Albus-2.16 代码块样式重构
+======================================== */
+
+.HyperMD-codeblock-begin {
+  counter-reset: line-numbers;
+}
+
+.HyperMD-codeblock.cm-line:not(.HyperMD-codeblock-begin):not(.HyperMD-codeblock-end) {
+  padding-left: 2.5em !important;
+  position: relative;
+}
+
+.HyperMD-codeblock.cm-line:not(.HyperMD-codeblock-begin):not(.HyperMD-codeblock-end)::after {
+  align-items: flex-start;
+  color: var(--text-faint);
+  content: counter(line-numbers);
+  counter-increment: line-numbers;
+  display: flex;
+  font-size: 0.8em;
+  height: 100%;
+  justify-content: flex-end;
+  left: 0;
+  position: absolute;
+  text-align: right;
+  width: 2em;
+  padding-right: 0.5em;
+  bottom: -2px;
+ white-space: nowrap;
+}
+
+.HyperMD-codeblock.cm-line.cm-active:not(.HyperMD-codeblock-begin):not(.HyperMD-codeblock-end)::after {
+  color: var(--color-accent);
+}
+
+.HyperMD-codeblock .cm-foldPlaceholder::before {
+  display: none;
+}
+
+
+
+/* !代码块显示长度 */
+/* https://forum-zh.obsidian.md/t/topic/27088 
+pre code {
+  display: block;
+  max-height: 700px;
+  overflow-x: hidden;
+  white-space: pre-wrap;
+}*/
+
+/* 隐藏滚动条只在代码块内生效 */
+pre code::-webkit-scrollbar {
+  display:none !important;
+}
+
+/*! 以下CSS片段参考PinkTopaz主题的代码块样式 */
+
+/* !代码块按钮设置*/
+/*===========================*/
+/*copy button for code blocks*/
+/*===========================*/
+.copy-code-button {
+  width: 1.2rem;
+  font-size: large !important;
+  color: transparent !important;
+  border-radius: 0px 5px 5px 0px !important;
+  margin-top: 0 !important;
+  margin-left: 0 !important;
+  margin-right: 0 !important;
+  margin-bottom: 0 !important;
+  padding: 0px 1px !important;
+  position: absolute;
+  top: 0 !important;
+  bottom: 0px !important;
+}
+
+.copy-code-button:hover {
+  background-color: #696c6e7c !important;
+  color: aliceblue !important;
+}
+
+/* Code */
+:not(pre)>code[class*="language-"],
+pre[class*="language-"] {
+  background-color: var(--background-primary-alt);
+  /* 代码块 圆角 阴影 */
+  border-left: 0.5rem solid slateblue !important;
+  border-radius: 6px;
+  margin-top: 10px;
+  margin-bottom: 10px;
+  box-shadow: rgb(0 0 0/15%) 0px 2px 10px;
+}
+
+pre {
+  position: relative;
+  color: slateblue !important;
+  line-height: 20px !important;
+}
+
+/* 每个语言单独写 C语言 要写在前面 否则出现覆盖C# C++的问题 */
+pre::before{
+  position: absolute;
+  right: 20px !important;
+  font-family: 'Maple Mono CN';
+}
+
+pre[class='language-c']:before {
+  content: "C";
+}
+
+pre[class='language-matlab']:before {
+  content: "Matlab";
+}
+
+pre[class='language-markdown']:before {
+  content: "Markdown";
+}
+
+pre[class='language-md']:before {
+  content: "Markdown";
+}
+
+pre[class='language-py']:before {
+  content: "Python";
+}
+
+pre[class='language-python']:before {
+  content: "Python";
+}
+
+pre[class='language-nginx']:before {
+  content: "Nginx";
+}
+
+pre[class='language-css']:before {
+  content: "CSS";
+}
+
+pre[class='language-javascript']:before {
+  content: "JS";
+}
+
+pre[class='language-js']:before {
+  content: "JS";
+}
+
+
+pre[class='language-php']:before {
+  content: "Php";
+}
+
+pre[class='language-shell']:before {
+  content: "Shell";
+}
+
+pre[class='language-flow']:before {
+  content: "Flow";
+}
+
+pre[class='language-sequence']:before {
+  content: "Sequence";
+}
+
+pre[class='language-sql']:before {
+  content: "Sql";
+}
+
+pre[class='language-yaml']:before {
+  content: "Yaml";
+}
+
+pre[class='language-ini']:before {
+  content: "ini";
+}
+
+pre[class='language-xml']:before {
+  content: "Xml";
+}
+
+pre[class='language-git']:before {
+  content: "Git";
+}
+
+pre[class='language-cs']:before {
+  content: "C#";
+}
+
+pre[class='language-cpp']:before {
+  content: "C++";
+}
+
+pre[class='language-java']:before {
+  content: "Java";
+}
+
+pre[class='language-html']:before {
+  content: "Html";
+}
+
+pre[class='language-txt']:before {
+  content: "txt";
+}
+
+pre[class='language-music-abc']:before {
+  content: "ABC";
+}
+
+pre[class='language-new']:before {
+  content: "新版";
+}
+
+pre[class='language-old']:before {
+  content: "旧版";
+}
+
+pre[class='language-api']:before {
+  content: "API";
+}
+
+pre[class='language-url']:before {
+  content: "URL";
+}
+
+
+
+/* ========================================
+Albus-2.18 挖空语法
+======================================== */
+em > del,
+.cm-em.cm-strikethrough:not(.cm-active > span) {
+    border-bottom: 2px dashed var(--text-highlight-border-color);
+    font-style: normal;
+    text-decoration: none;
+    color: transparent;
+    transition: color 0.3s;
+}
+
+.cm-active > .cm-em.cm-strikethrough {
+    border-bottom: 2px dashed var(--text-highlight-border-color);
+    font-style: normal;
+    text-decoration: none;
+}
+
+em > del:hover,
+.cm-em.cm-strikethrough:hover:not(.cm-active > span) {
+    color: var(--text-normal);
+    transition: color 0.3s;
+}
+
+
+/* ========================================
+Albus-4 CSSCLASSES
+======================================== */
+
+/* ========================================
+Albus-4.1 烟花特效 - fireworks
+======================================== */
+.workspace-tabs .workspace-leaf .view-content:has(.fireworks)::before,
+body[data-canvas-path*="Home"] .view-content::before
+{
+  z-index: 99;
+  content: "";
+  position: absolute;
+  width: 150px;
+  height: 150px;
+  background: #FFEFAD;
+  right:35%;
+  top: 35%;
+  -webkit-mask: url('https://imgservices-1252317822.image.myqcloud.com/image/081320210201435/e9951400.png') right top no-repeat;
+  -webkit-mask-size: auto 150px;
+  animation: fireworks 3s steps(24) infinite, random 8s steps(1) infinite, random_color 1s infinite;
+}
+
+:is(.markdown-preview-view,.markdown-rendered).fireworks::before,
+body[data-canvas-path*="Home"]  .canvas-wrapper::after {
+  z-index: 99;
+  content: "";
+  position: absolute;
+  width: 150px;
+  height: 150px;
+  left: 15%; 
+  top: 5%;
+  background: #FFEFAD;
+ padding-top: 100px; 
+  -webkit-mask: url('https://imgservices-1252317822.image.myqcloud.com/image/081320210201435/e9951400.png') right top no-repeat;
+  -webkit-mask-size: auto 150px;
+  animation: fireworks 2s steps(24) infinite, random 8s steps(1) infinite, random_color 1s infinite;
+}
+@keyframes fireworks {
+  0% {
+      -webkit-mask-position: 0%;
+  }
+  50%,
+  100% {
+      -webkit-mask-position: 100% 100%;
+  }
+}
+
+@keyframes random {
+  0% {
+      transform: translate(0, 0);
+  }
+  25% {
+      transform: translate(200%, 50%) scale(0.8);
+  }
+  50% {
+      transform: translate(80%, 80%) scale(1.2);
+  }
+  75% {
+      transform: translate(20%, 60%) scale(0.65);
+  }
+}
+@keyframes random_color {
+  0% {
+      background-color: #FFEFAD;
+  }
+  25% {
+      background-color: #ffadad;
+  }
+  50% {
+      background-color: #aeadff;
+  }
+  75% {
+      background-color: #adffd9;
+  }
+}
+
+
+/* ========================================
+Albus-4.3 伪看板 - kanban
+======================================== */
+/* cssclass: kanban */
+/* adapted from spectrum theme, thanks to @Braweria. https://github.com/Braweria/Spectrum */
+/* a kind of css-based pseudo-kanban feature */
+.kanban ul {
+  display: flex;
+  flex-direction: row;
+  border: 0px solid var(--p-kanban-border-color);
+  padding: 0rem;
+  border-radius: var(--radius-m);
+  flex-wrap: wrap;
+}
+.kanban ul>li .list-bullet:after {
+  display: none;
+}
+
+.kanban ul>li {
+  flex: 1 1 20%;
+  padding: 0.1em 1em 0.1em 0.8em;
+  margin: 0 0.3em 0.3em 0 !important;
+  list-style: none;
+  border: 1px solid var(--p-kanban-border-color);
+  border-left: 1px solid var(--p-kanban-border-color) !important;
+  border-radius: var(--radius-s);
+  word-wrap: break-word;
+  word-break: break-word;
+}
+
+.kanban ul li.task-list-item .task-list-item-checkbox {
+  margin-left: auto;
+}
+
+
+.kanban ul .list-collapse-indicator.collapse-indicator.collapse-icon::before {
+  color: var(--text-accent);
+  transition: transform 10ms linear 0s
+}
+
+body.colorful-p-kanban .kanban ul>li:nth-of-type(8n+1) {
+  background-color: var(--p-kanban-color-1);
+}
+body.colorful-p-kanban .kanban ul>li:nth-of-type(8n+2) {
+  background-color: var(--p-kanban-color-2);
+}
+body.colorful-p-kanban .kanban ul>li:nth-of-type(8n+3) {
+  background-color: var(--p-kanban-color-3);
+}
+body.colorful-p-kanban .kanban ul>li:nth-of-type(8n+4) {
+  background-color: var(--p-kanban-color-4);
+}
+body.colorful-p-kanban .kanban ul>li:nth-of-type(8n+5) {
+  background-color: var(--p-kanban-color-5);
+}
+body.colorful-p-kanban .kanban ul>li:nth-of-type(8n+6) {
+  background-color: var(--p-kanban-color-6);
+}
+body.colorful-p-kanban .kanban ul>li:nth-of-type(8n+7) {
+  background-color: var(--p-kanban-color-7);
+}
+body.colorful-p-kanban .kanban ul>li:nth-of-type(8n) {
+  background-color: var(--p-kanban-color-8);
+}
+.canvas-node-container .kanban ul>li:nth-of-type(n) {
+  backdrop-filter:none;
+}
+.kanban ul>li:nth-of-type(n) {
+  background-color: var(--p-kanban-color-simple);
+  padding-left: 1em;
+  backdrop-filter: blur(calc(var(--blur-p-kanban-frosted-glass) * 2px));
+}
+.kanban ul:first-child>li:nth-of-type(8n+1) {
+  border-top: 6px solid var(--p-kanban-color-1) !important;
+}
+.kanban ul:first-child>li:nth-of-type(8n+2) {
+  border-top: 6px solid var(--p-kanban-color-2) !important;
+}
+.kanban ul:first-child>li:nth-of-type(8n+3) {
+  border-top: 6px solid var(--p-kanban-color-3) !important;
+}
+.kanban ul:first-child>li:nth-of-type(8n+4) {
+  border-top: 6px solid var(--p-kanban-color-4) !important;
+}
+.kanban ul:first-child>li:nth-of-type(8n+5) {
+  border-top: 6px solid var(--p-kanban-color-5) !important;
+}
+.kanban ul:first-child>li:nth-of-type(8n+6) {
+  border-top: 6px solid var(--p-kanban-color-6) !important;
+}
+.kanban ul:first-child>li:nth-of-type(8n+7) {
+  border-top: 6px solid var(--p-kanban-color-7) !important;
+}
+.kanban ul:first-child>li:nth-of-type(8n) {
+  border-top: 6px solid var(--p-kanban-color-8) !important;
+}
+body.simple-p-kanban .kanban ul:first-child>li:nth-of-type(n) {
+  border-top: none !important;
+}
+
+body:not(.remove-shadow-p-kanban) .kanban ul>li:hover {
+  transition: box-shadow .2s cubic-bezier(.4, 0, 1, 1);
+  box-shadow: 0 3px 5px 0 var(--p-kanban-color-shadow), 0 3px 1px -3px var(--p-kanban-color-shadow), 2px 3px 3px 0 var(--p-kanban-color-shadow);
+}
+
+.kanban ul ul {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 0rem;
+  margin-top: 0.5rem;
+  border-radius: 0;
+  border: 0;
+  background: none;
+}
+
+.kanban ul ul li:not(.task-list-item) {
+  width: 100%;
+  display: block;
+  background-color: var(--p-kanban-card-color-1) !important;
+}
+
+body.remove-shadow-p-kanban .kanban ul ul li:hover {
+  background: var(--p-kanban-card-color-2) !important;
+  border-color: var(--p-kanban-border-color) !important;
+  border-left: 1px solid var(--p-kanban-border-color) !important;
+}
+
+body.remove-shadow-p-kanban.theme-dark .kanban ul ul li:hover {
+  border-color: #696969e1 !important;
+  border-left: 1px solid #696969e1 !important;
+}
+
+.kanban ul ul li .task-list-item-checkbox {
+  margin-left: 1.5rem !important;
+}
+
+.kanban ul ul ul {
+  margin-right: 0;
+}
+
+.kanban ul ul::before {
+  border-left: 0;
+}
+
+:is(.markdown-preview-view,.markdown-rendered).is-readable-line-width.kanban .markdown-preview-sizer>div>ul {
+  max-width: 100%;
+}
+
+.kanban :is(ol,ul).contains-task-list :is(ol,ul) {
+  position: initial;
+}
+
+.kanban :is(ol,ul).contains-task-list :is(ol,ul)::before {
+  all: initial;
+}
+
+.kanban ul > li.task-list-item {
+  flex: 1 1 20%;
+  padding: 0.1em 1em;
+  list-style: none;
+  border: 1px solid var(--p-kanban-border-color);
+  border-left: 1px solid var(--p-kanban-border-color) !important;
+  border-radius: var(--radius-s);
+  word-wrap: break-word;
+  word-break: break-word;
+  text-indent: 0.01em;
+}
+
+.kanban ul ul li.task-list-item {
+  width: 100%;
+  display: block;
+  padding-left: 2em;
+  text-indent: -3em;
+  background-color: var(--p-kanban-card-color-1) !important;
+}
+
+.kanban ul ul li.task-list-item .list-collapse-indicator.collapse-indicator.collapse-icon {
+  text-indent: -1em;
+}
+
+body:not(.default-icons) .kanban li.task-list-item .list-collapse-indicator.collapse-indicator.collapse-icon::before {
+  margin-left: -0.2em;
+}
+
+body:not(.default-icons) .kanban li.task-list-item .task-list-item.is-collapsed .list-collapse-indicator.collapse-indicator.collapse-icon::before {
+  transform: translateX(-0.9em) translateY(-1em) rotate(-90deg);
+}
+
+body.colorful-p-kanban .kanban .task-list-item-checkbox {
+  border-color: var(--text-normal) !important;
+}
+
+.kanban{
+  --indentation-guide-color: transparent !important;
+}
+
+
+/* ========================================
+Albus-4.4 全宽预览 - fullwidth
+======================================== */
+/*主页预览宽度*/
+:is(.markdown-preview-view,.markdown-rendered).fullwidth.is-readable-line-width .markdown-preview-sizer,
+.markdown-source-view.is-readable-line-width.fullwidth .CodeMirror,
+.is-readable-line-width.fullwidth :is(.markdown-preview-section,.markdown-rendered),
+.is-readable-line-width.fullwidth :is(.markdown-preview-section,.markdown-rendered) > div,
+:is(.markdown-preview-view,.markdown-rendered).is-readable-line-width.fullwidth :is(.markdown-preview-section,.markdown-rendered) {
+  width: 100% !important;
+  max-width: 100% !important;
+  /* margin: 0 auto; */
+}
+
+/* ========================================
+Albus-4.5 首行缩进 - indent
+======================================== */
+body.text-indentation-two-em .workspace-leaf-content[data-type="markdown"] .markdown-source-view.mod-cm6 div.cm-line:not(:is(.hr,.HyperMD-header,.HyperMD-quote,.HyperMD-list-line)),
+.markdown-source-view.mod-cm6.indent div.cm-line:not(:is(.hr,.HyperMD-header,.HyperMD-quote,.HyperMD-list-line)) {
+  text-indent: 2em;
+}
+
+body.text-indentation-two-em  .workspace-leaf-content[data-type="markdown"]  .markdown-source-view.mod-cm6 div.cm-line:not(:is(.hr,.HyperMD-header,.HyperMD-quote,.HyperMD-list-line)) .cm-hmd-frontmatter:first-of-type,
+.markdown-source-view.mod-cm6.indent div.cm-line:not(:is(.hr,.HyperMD-header,.HyperMD-quote,.HyperMD-list-line)) .cm-hmd-frontmatter:first-of-type {
+  margin-left: -2em;
+}
+body.text-indentation-two-em .markdown-source-view.mod-cm6 div.has-banner.cm-line:not(.HyperMD-header) .cm-def.cm-hmd-frontmatter,
+body.text-indentation-two-em .markdown-source-view.mod-cm6 div.has-banner.cm-line:not(.HyperMD-header) .collapse-indicator,
+.markdown-source-view.mod-cm6.indent div.has-banner.cm-line:not(.HyperMD-header) .cm-def.cm-hmd-frontmatter,
+.markdown-source-view.mod-cm6.indent div.has-banner.cm-line:not(.HyperMD-header) .collapse-indicator {
+  margin-left: 0;
+  left: -3em;
+}
+
+body.text-indentation-two-em [data-type="markdown"] div[class="el-p"]:not(blockquote) > p,
+[data-type="markdown"] :is(.markdown-preview-view,.markdown-rendered).indent div[class="el-p"]:not(blockquote) > p {
+  text-indent: 2em;
+}
+
+
+body.text-indentation-two-em [data-type="markdown"] div[class="el-p"]:not(blockquote) > p>br,
+[data-type="markdown"] :is(.markdown-preview-view,.markdown-rendered).indent div[class="el-p"]:not(blockquote) >  p>br {
+  content: ' ';
+  white-space: pre;
+  line-height: calc((var(--paragraph-spacing) + 0.3) * 1em);
+  display:unset;
+}
+body.text-indentation-two-em [data-type="markdown"] div[class="el-p"]:not(blockquote) > p>br::after,
+[data-type="markdown"] :is(.markdown-preview-view,.markdown-rendered).indent div[class="el-p"]:not(blockquote) >p>br::after {
+  content: '\A\9\9';
+}
+
+/* ========================================
+Albus-4.6 全文手写风格字体
+======================================== */
+
+:is(.markdown-preview-view,.markdown-rendered,.cm-line).handwriting.is-readable-line-width .markdown-preview-sizer,
+.markdown-source-view.is-readable-line-width.handwriting .CodeMirror,
+.is-readable-line-width.handwriting :is(.markdown-preview-section,.markdown-rendered,.cm-line),
+.is-readable-line-width.handwriting :is(.markdown-preview-section,.markdown-rendered,.cm-line) > div,
+:is(.markdown-preview-view,.markdown-rendered,.cm-line).is-readable-line-width.handwriting :is(.markdown-preview-section,.markdown-rendered,.cm-line) {
+  font-family: 'Patrick Hand','撒野青春奶酪体';
+}
+
+
+:is(.markdown-preview-view,.markdown-rendered,.cm-line).pinyin.is-readable-line-width .markdown-preview-sizer,
+.markdown-source-view.is-readable-line-width.pinyin .CodeMirror,
+.is-readable-line-width.pinyin :is(.markdown-preview-section,.markdown-rendered,.cm-line),
+.is-readable-line-width.pinyin :is(.markdown-preview-section,.markdown-rendered,.cm-line) > div,
+:is(.markdown-preview-view,.markdown-rendered,.cm-line).is-readable-line-width.pinyin :is(.markdown-preview-section,.markdown-rendered,.cm-line) {
+  font-family: 'Mengshen-Handwritten';
+}
+
+
+
+/* ========================================
+Albus-4.7 网格背景
+======================================== */
+.theme-dark {
+  --grid-line-color-1: #3d3d3f66;
+  --grid-line-color-2: #74747440;
+  --grid-dot-color: #c7c7c71f;
+}
+
+.theme-light {
+  --grid-line-color-1: #c7c7c740;
+  --grid-line-color-2: #afafaf40;
+  --grid-dot-color: #c7c7c780;
+}
+
+/* 网格背景 */
+/* .markdown-reading-view .markdown-rendered, .markdown-source-view.mod-cm6 .cm-scroller, */
+.grid {
+  background-size: 20px 20px;
+  background-position: center center;
+  background-image: linear-gradient(to right, var(--grid-line-color-1) 1px, transparent 1px), linear-gradient(to bottom, var(--grid-line-color-2) 1px, transparent 1px);
+}
+
+
+/* 点阵背景 */
+/* .markdown-reading-view .markdown-rendered, .markdown-source-view.mod-cm6 .cm-scroller, */
+.dot {
+  height: 100%;
+  background-image: radial-gradient(circle, var(--grid-dot-color) 1px, var(--background-primary) 1px);
+  background-size: 20px 20px;
+  background-position: center center;
+}
+
+/* 避免 Hover Editor 里奇怪的异常表现 */
+.popover .grid-bg {
+  mask-image: none;
+}
