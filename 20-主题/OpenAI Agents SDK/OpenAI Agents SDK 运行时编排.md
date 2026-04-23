@@ -12,6 +12,18 @@ type: note
 
 # OpenAI Agents SDK 运行时编排
 
+## 这篇笔记要解决什么
+
+这篇不盯某一个源码文件，而是回答一个更整体的问题：
+
+这套 SDK 到底把哪些运行时能力编织在了一起，才让一次 run 变成真正的 agent 执行过程。
+
+## 我研究这部分时最关心什么
+
+- tools、handoffs、guardrails、sessions、tracing 分别解决什么问题
+- 它们是并列模块，还是被织进同一条执行链
+- 这套 runtime 的“治理层”体现在哪里
+
 ## 1. Tool 解决“去做事”
 
 `src/agents/tool.py` 是工具系统主入口。
@@ -102,3 +114,11 @@ type: note
 - `examples/agent_patterns/routing.py`
 - `examples/agent_patterns/input_guardrails.py`
 - `examples/memory/`
+
+## 我的理解
+
+这套 SDK 最值得学的不是某个单点功能，而是它把执行、委派、治理、持久化和观测织进了同一条运行时主线。
+
+## 相关笔记
+
+- [[OpenAI Agents SDK 研究路线]]

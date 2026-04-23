@@ -15,6 +15,12 @@ type: note
 
 `Runner.run()` 进入 `run_internal/` 之后，代码到底怎么分层、数据怎么在各层之间流动。
 
+## 我研究这部分时最关心什么
+
+- `run_internal/` 为什么要拆成这么多文件
+- 每个文件解决的是准备、解析、执行还是持久化问题
+- `run_steps.py` 里的中间对象为什么是理解整条链的关键
+
 ## 1. `run_internal/` 里的几个关键角色
 
 ### `run_steps.py`
@@ -32,19 +38,6 @@ type: note
 
 我会把它看成整条执行链的“状态交换协议”。
 
-尤其 `ProcessedResponse` 很关键，因为它把一次模型响应拆成了：
-
-- 新产出的 items
-- handoff 列表
-- function tool 列表
-- computer action
-- shell call
-- apply_patch call
-- MCP approval request
-- interruption
-
-也就是说，模型先给出原始 response，`run_internal` 再把它规整成一个可执行计划。
-
 ### `turn_preparation.py`
 
 这是“本轮准备层”。
@@ -58,25 +51,11 @@ type: note
 - 解析当前要用的 model
 - 在必要时过滤模型输入
 
-所以它回答的是：
-
-“这一次 turn 开始前，我们到底准备了什么运行材料。”
-
 ### `turn_resolution.py`
 
 这是“本轮解析与决策层”。
 
 它负责把模型输出变成下一步动作。
-
-这里最值得记住的事情是：
-
-- 它不仅解析 final output
-- 还会识别 handoff、tool call、interruptions
-- 并根据工具结果决定是否能直接收束成 final output
-
-我会把这层理解成：
-
-“把模型的表达，翻译成 runtime 能执行的下一步。”
 
 ### `tool_execution.py`
 
@@ -88,10 +67,7 @@ type: note
 - shell call / local shell
 - apply patch
 - computer action
-- hosted MCP approval 相关处理
 - tool error / tracing / guardrail 配套逻辑
-
-所以不要把它理解成一个简单的 `invoke(tool)` 文件，它其实是工具运行期的基础设施层。
 
 ### `session_persistence.py`
 
@@ -104,8 +80,6 @@ type: note
 - 把本轮新增的 run items 落进 session
 - interruption / resume 后修正 `RunState`
 
-这层说明 SDK 对“多轮状态”不是事后拼接，而是运行时主线的一部分。
-
 ### `run_loop.py`
 
 这是“总编排层”。
@@ -116,11 +90,6 @@ type: note
 - `run_single_turn_streamed`
 - `run_single_turn`
 - `get_new_response`
-
-可以理解为：
-
-- 其他文件在分工
-- `run_loop.py` 在真正推动这一轮往前走
 
 ## 2. 一次 turn 的粗粒度流向
 
@@ -144,8 +113,6 @@ type: note
 - 一次响应被拆成哪些执行项
 - 一次 step 最终会产出什么
 - runtime 允许哪些下一步状态
-
-如果先不看这个文件，直接冲进 `run_loop.py`，很容易只看到大量 if/else 和 helper 调用。
 
 ## 4. 我对几个关键对象的记忆方式
 
@@ -173,26 +140,13 @@ type: note
 
 “先停下来，等审批或恢复”
 
-## 5. `run_loop.py` 的阅读建议
+## 5. 我的理解
 
-这个文件函数很多，而且同时覆盖 streamed / non-streamed 两条路径。
+`run_internal/` 最值得学的地方，不只是它把逻辑拆开了，而是它把 agent 执行过程明确建成了一套可传递、可恢复、可分流的运行协议。
 
-更适合的阅读方式不是从头顺读，而是按这条顺序抓主函数：
+## 相关笔记
 
-1. `run_single_turn`
-2. `get_new_response`
-3. `run_single_turn_streamed`
-4. `start_streaming`
-
-然后再回头看：
-
-- streamed final output 怎么收尾
-- interruption 怎么补存 session
-- output guardrails 在流式路径里怎么处理
-
-## 6. 现在最适合继续补的细化方向
-
-- `turn_resolution.py` 的“从 response 到 `ProcessedResponse`”细拆
-- `tool_execution.py` 里的 approval 与 error handling 机制
-- `session_persistence.py` 的 dedupe / normalize / resume 细节
-- streamed 与 non-streamed 两条路径的差异
+- [[OpenAI Agents SDK 执行主线与源码入口]]
+- [[OpenAI Agents SDK turn_resolution 决策流]]
+- [[OpenAI Agents SDK tool_execution 工具执行流]]
+- [[OpenAI Agents SDK session_persistence 状态持久化]]

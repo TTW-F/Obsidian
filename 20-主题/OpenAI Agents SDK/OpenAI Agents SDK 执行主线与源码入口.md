@@ -9,6 +9,18 @@ type: note
 
 # OpenAI Agents SDK 执行主线与源码入口
 
+## 这篇笔记要解决什么
+
+这篇主要回答：
+
+如果我想从“知道这套 SDK 是干什么的”走到“真正读懂它的执行骨架”，最应该先看哪些源码入口。
+
+## 我研究这部分时最关心什么
+
+- 公共 API 如何暴露整体能力
+- `Agent` 和 `Runner` 的职责如何分开
+- `run_internal/` 为什么是理解执行链的关键入口
+
 ## 公共 API 总地图
 
 `src/agents/__init__.py` 基本可以当成这套 SDK 的“公开能力索引”。
@@ -100,12 +112,11 @@ type: note
 - 执行 guardrail、工具和持久化
 - 继续下一轮或结束
 
-## 适合继续补的方向
+## 我的理解
 
-- 把 `run_internal` 每个文件再拆成函数级调用链笔记
-- 专门写一页 `Runner.run()` 的 turn-by-turn 流程图
-- 对照 `tests/` 验证每个关键分支
+理解这套 SDK 的第一步，不是记 API 名字，而是先把 `Agent -> Runner -> run_internal` 这条主线抓稳。
 
 ## 相关笔记
 
+- [[OpenAI Agents SDK 研究路线]]
 - [[OpenAI Agents SDK run_internal 执行链路]]

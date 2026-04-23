@@ -57,6 +57,13 @@ type: note
 
 这是从“普通 agent”升级到“工作区 agent”的关键跃迁。
 
+## Sandbox 记忆案例
+
+如果已经理解 sandbox 基础能力，接下来最值得看的两张案例卡是：
+
+- [[案例卡：sandbox memory 单智能体跨快照续跑]]
+- [[案例卡：sandbox memory 多智能体多轮隔离]]
+
 ## 第五层：完整工作流示例
 
 如果要看更像真实系统的组织方式，优先看：
@@ -70,6 +77,13 @@ type: note
 - manager / planner / writer / verifier 的角色拆分
 - 多 agent 如何串起来
 - 最终输出如何整理
+
+## Sandbox 项目卡
+
+如果想看更接近“产品切片”的 sandbox 教程，先看：
+
+- [[项目卡：sandbox repo_code_review 工作流]]
+- [[项目卡：sandbox vision_website_clone 工作流]]
 
 ## 我给自己的学习路线
 

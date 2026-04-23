@@ -10,6 +10,18 @@ type: note
 
 # OpenAI Agents SDK Sandbox、MCP 与扩展生态
 
+## 这篇笔记要解决什么
+
+这篇主要回答：
+
+这套 SDK 除了主执行链之外，还往哪些方向扩展了能力边界。
+
+## 我研究这部分时最关心什么
+
+- Sandbox 是单个能力，还是新的运行范式
+- MCP 在这套 SDK 里处在什么层级
+- provider、realtime、voice 这些扩展是否共享同一 runtime 思路
+
 ## 1. Sandbox 是近阶段最值得深挖的一层
 
 从 README、`docs/zh/sandbox_agents.md` 和 `src/agents/sandbox/` 的体量来看，Sandbox 不是附属能力，而是新一代重点方向。
@@ -81,3 +93,12 @@ type: note
 - `examples/mcp/`
 - `examples/model_providers/`
 - `examples/realtime/`
+
+## 我的理解
+
+OpenAI Agents SDK 的扩展线不是在主链外面随便挂几个模块，而是在不断把“agent 能工作的环境”往更真实的系统边界推进。
+
+## 相关笔记
+
+- [[OpenAI Agents SDK 研究路线]]
+- [[OpenAI Agents SDK 示例与学习路径]]

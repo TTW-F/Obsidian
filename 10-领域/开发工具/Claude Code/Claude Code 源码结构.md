@@ -113,6 +113,7 @@ type: area
 ## 相关笔记
 
 - [[Claude Code 总览]]
+- [[Claude Code 阅读路径与关键文件入口]]
 - [[Claude Code 启动链路与运行模式]]
 - [[Claude Code Agent 主循环与工具执行]]
 - [[Claude Code 扩展总线：Skills、Plugins、MCP]]
@@ -124,6 +125,14 @@ type: area
 - [[Claude Code Coordinator、Swarm 与 Subagent 机制]]
 - [[Claude Code Compact、History Snip 与长上下文收缩]]
 - [[Claude Code Hooks、Telemetry 与产品化观测]]
+- [[Claude Code MCP 客户端接入链路]]
+- [[Claude Code 插件加载与 Marketplace 机制]]
+- [[Claude Code 文件系统与 Shell 安全模型]]
+- [[Claude Code REPL、Ink 与交互层]]
+- [[Claude Code 建议系统与 Advisor 机制]]
+- [[Claude Code 任务系统与后台执行模型]]
+- [[Claude Code 提示词分层与 System Prompt 组织]]
+- [[Claude Code Worktree、Remote Isolation 与执行隔离]]
 - [[../../../20-主题/Agentic CLI/Agentic CLI 研究路线]]
 - [[../../../20-主题/Agentic CLI/Agentic CLI 总览]]
 - [[../../../20-主题/Agentic CLI/工具调用系统]]

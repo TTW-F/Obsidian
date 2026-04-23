@@ -31,18 +31,44 @@ type: area
 
 ## 当前入口
 
+### 先从这里进入
+
+- [[Claude Code 阅读路径与关键文件入口]]
 - [[Claude Code 源码结构]]
-- [[Claude Code 启动链路与运行模式]]
 - [[Claude Code Agent 主循环与工具执行]]
-- [[Claude Code 扩展总线：Skills、Plugins、MCP]]
-- [[Claude Code 命令系统与命令发现]]
-- [[Claude Code Bridge、Remote 与 IDE 集成]]
+
+### 运行时骨架
+
+- [[Claude Code 启动链路与运行模式]]
 - [[Claude Code 会话、状态与上下文系统]]
 - [[Claude Code 输入预处理、工具调度与权限插入]]
 - [[Claude Code 模型 API 适配层]]
-- [[Claude Code Coordinator、Swarm 与 Subagent 机制]]
+- [[Claude Code 提示词分层与 System Prompt 组织]]
 - [[Claude Code Compact、History Snip 与长上下文收缩]]
+
+### 扩展与平台
+
+- [[Claude Code 扩展总线：Skills、Plugins、MCP]]
+- [[Claude Code MCP 客户端接入链路]]
+- [[Claude Code 插件加载与 Marketplace 机制]]
+- [[Claude Code 命令系统与命令发现]]
+- [[Claude Code 建议系统与 Advisor 机制]]
+
+### 多代理、任务与隔离
+
+- [[Claude Code Coordinator、Swarm 与 Subagent 机制]]
+- [[Claude Code 任务系统与后台执行模型]]
+- [[Claude Code Worktree、Remote Isolation 与执行隔离]]
+
+### 交互、观测与安全
+
+- [[Claude Code Bridge、Remote 与 IDE 集成]]
+- [[Claude Code REPL、Ink 与交互层]]
 - [[Claude Code Hooks、Telemetry 与产品化观测]]
+- [[Claude Code 文件系统与 Shell 安全模型]]
+
+### 抽象主题回链
+
 - [[../../../20-主题/Agentic CLI/Agentic CLI 研究路线]]
 - [[../../../20-主题/Agentic CLI/Agentic CLI 总览]]
 - [[../../../20-主题/Agentic CLI/工具调用系统]]
@@ -62,6 +88,12 @@ type: area
 - `20-主题` 里提炼成可迁移的方法论
 - `30-地图` 里负责把这些内容串起来
 
+如果只想快速进入，不必先逐篇读完，优先看：
+
+1. [[Claude Code 阅读路径与关键文件入口]]
+2. [[Claude Code 源码结构]]
+3. [[Claude Code Agent 主循环与工具执行]]
+
 ## 我目前最关心的几个问题
 
 - 一个成熟的 coding agent 到底如何组织主循环
@@ -69,13 +101,12 @@ type: area
 - 权限系统如何既保守又不妨碍执行力
 - 多代理、技能、插件这些扩展能力如何纳入统一治理
 
+## 后续可继续补充
+
+- Claude Code 的模型选择、effort 与 thinking 配置协同
+- Claude Code 的内存提取与 memory 注入链路
+- 从 Claude Code 反推 agent 工具设计原则
+
 ## 我的理解
 
 `Claude Code` 的价值不只在“能写代码”，而在于它把 agent 系统里最难的几块东西放进了一个可运行、可扩展、可治理的产品里。
-
-## 后续可继续补充
-
-- Claude Code 的 UI / Ink 架构
-- Claude Code 的具体 MCP 客户端接入链路
-- Claude Code 的插件加载与 marketplace 细节
-- 从 Claude Code 反推 agent 工具设计原则
