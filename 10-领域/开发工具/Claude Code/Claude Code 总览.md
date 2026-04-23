@@ -41,6 +41,8 @@ type: area
 - [[Claude Code 输入预处理、工具调度与权限插入]]
 - [[Claude Code 模型 API 适配层]]
 - [[Claude Code Coordinator、Swarm 与 Subagent 机制]]
+- [[Claude Code Compact、History Snip 与长上下文收缩]]
+- [[Claude Code Hooks、Telemetry 与产品化观测]]
 - [[../../../20-主题/Agentic CLI/Agentic CLI 研究路线]]
 - [[../../../20-主题/Agentic CLI/Agentic CLI 总览]]
 - [[../../../20-主题/Agentic CLI/工具调用系统]]
@@ -74,6 +76,6 @@ type: area
 ## 后续可继续补充
 
 - Claude Code 的 UI / Ink 架构
-- Claude Code 的 compact / history snip / 长上下文收缩机制
-- Claude Code 的 hooks / telemetry / product instrumentation
+- Claude Code 的具体 MCP 客户端接入链路
+- Claude Code 的插件加载与 marketplace 细节
 - 从 Claude Code 反推 agent 工具设计原则

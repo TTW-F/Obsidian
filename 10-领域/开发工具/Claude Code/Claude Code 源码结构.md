@@ -122,6 +122,8 @@ type: area
 - [[Claude Code 输入预处理、工具调度与权限插入]]
 - [[Claude Code 模型 API 适配层]]
 - [[Claude Code Coordinator、Swarm 与 Subagent 机制]]
+- [[Claude Code Compact、History Snip 与长上下文收缩]]
+- [[Claude Code Hooks、Telemetry 与产品化观测]]
 - [[../../../20-主题/Agentic CLI/Agentic CLI 研究路线]]
 - [[../../../20-主题/Agentic CLI/Agentic CLI 总览]]
 - [[../../../20-主题/Agentic CLI/工具调用系统]]
