@@ -1,0 +1,4 @@
+interface:
+  display_name: "Obsidian Map Curator"
+  short_description: "Curate map notes for better vault navigation."
+  default_prompt: "Use $obsidian-map-curator to update a map note in 30-地图 so it becomes a stronger navigation hub."

@@ -1,0 +1,4 @@
+interface:
+  display_name: "Obsidian Vault Audit"
+  short_description: "Audit vault structure, naming, metadata, and links."
+  default_prompt: "Use $obsidian-vault-audit to inspect this Obsidian vault and surface the highest-leverage maintenance fixes."

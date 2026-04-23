@@ -1,0 +1,4 @@
+interface:
+  display_name: "Obsidian Inbox Triage"
+  short_description: "Triage inbox notes and route them into the right vault layer."
+  default_prompt: "Use $obsidian-inbox-triage to process notes in 00-收集 and decide whether to delete, merge, defer, or promote them."

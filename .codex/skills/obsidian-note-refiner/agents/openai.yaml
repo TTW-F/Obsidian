@@ -1,0 +1,4 @@
+interface:
+  display_name: "Obsidian Note Refiner"
+  short_description: "Refine rough notes into polished vault notes."
+  default_prompt: "Use $obsidian-note-refiner to turn a rough Obsidian note into a polished note that matches the vault writing standards."
