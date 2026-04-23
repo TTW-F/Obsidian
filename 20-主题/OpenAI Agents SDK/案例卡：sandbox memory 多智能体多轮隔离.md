@@ -7,25 +7,26 @@ tags:
   - 多智能体
   - 示例
 type: note
-source: E:\AI_Writer\vendor\openai-agents-python\examples\sandbox\memory_multi_agent_multiturn.py
+source: D:\Git_Obsidian\Obsidian\40-源码镜像\AI_Writer Vendor\openai-agents-python\examples\sandbox\memory_multi_agent_multiturn.py
 ---
 
 # 案例卡：sandbox memory 多智能体多轮隔离
 
-## 这个示例在演示什么
+## 这是什么
 
-这个案例的重点不是单 agent 跨快照延续，而是：
+这是一个用同一个 sandbox workspace 承载多个 agent，但通过不同 `MemoryLayoutConfig` 把长期记忆分开的案例。
 
-- 同一个 sandbox workspace
-- 两类不同 agent
-- 各自多轮或单轮运行
-- 通过不同 `MemoryLayoutConfig` 做记忆隔离
+它回答的问题不是“memory 能不能工作”，而是“多个 agent 共用一个工作区时，怎样避免记忆彼此污染”。
 
-所以它回答的问题是：
+## 为什么重要
 
-“多个 agent 共用一个工作区时，如何避免记忆相互污染。”
+- 它把 memory 的问题从“单 agent 续跑”推进到了“多角色边界设计”
+- 真实系统里，共用 workspace 并不意味着应该共享长期记忆
+- 这个案例把隔离策略直接落实到目录布局和产物层，而不是停留在抽象概念上
 
-## 场景拆分
+## 这个案例主要在验证什么
+
+### 1. 共享 workspace 不等于共享记忆
 
 示例里有两个角色：
 
@@ -37,11 +38,11 @@ source: E:\AI_Writer\vendor\openai-agents-python\examples\sandbox\memory_multi_a
 - GTM agent 看 `data/leads.csv` 做市场分析
 - Engineering agent 修 `report.py` 的 invoice total bug
 
-这正好构成了记忆隔离的典型需求。
+这正好构成了记忆隔离的典型需求。它们工作在同一个现场里，但长期记忆不应该混成一份。
 
-## 为什么这里只靠 agent name 不够
+### 2. 隔离靠 layout，不靠 agent name
 
-这个例子最重要的设计点，就是两个 agent 都显式配置了不同的：
+这个案例最重要的设计点，是两个 agent 都显式配置了不同的：
 
 - `memories_dir`
 - `sessions_dir`
@@ -51,18 +52,16 @@ source: E:\AI_Writer\vendor\openai-agents-python\examples\sandbox\memory_multi_a
 - `memories/gtm` + `sessions/gtm`
 - `memories/engineering` + `sessions/engineering`
 
-这正好验证官方文档里那句话：
+这正好验证官方文档里那句话：记忆隔离靠 layout，不靠 agent name。
 
-记忆隔离靠 layout，不靠 agent name。
-
-## 这个例子还顺手演示了多轮 memory conversation
+### 3. 多轮 session continuity 和多 agent isolation 可以同时存在
 
 GTM agent 不是只跑一轮，而是用了同一个 `SQLiteSession(GTM_SESSION_ID)` 连续跑两轮：
 
 1. 先做 segment 分析
 2. 再基于前一轮分析写 outreach hypothesis
 
-这表示：
+这说明：
 
 - 多次 `Runner.run(...)`
 - 共享同一个 SDK `Session`
@@ -75,7 +74,7 @@ GTM agent 不是只跑一轮，而是用了同一个 `SQLiteSession(GTM_SESSION_
 - 多轮 conversation continuity
 - 多 agent memory isolation
 
-## engineering agent 的作用
+### 4. Engineering agent 的作用是证明隔离真的生效
 
 Engineering agent 只跑一轮，但它很关键。
 
@@ -85,33 +84,19 @@ Engineering agent 只跑一轮，但它很关键。
 - 只要 memory layout 分开
 - GTM 的分析记忆不会混进 engineering 的 bug-fix 记忆
 
-这对真实工作流很重要。
+这对真实工作流很重要，因为很多系统里不同角色会共享一个大工作区，但不应该共享同一份长期经验。
 
-很多真实系统里：
+## 关键结构
 
-- 商业分析 agent
-- 编码 agent
-- 审查 agent
-- verifier agent
+这个案例里最值得盯的结构有三组：
 
-都可能共用一个大工作区，但它们不应该共享同一份长期记忆。
+- 同一个 sandbox workspace / manifest
+- 两套不同的 `MemoryLayoutConfig`
+- GTM 两轮 + Engineering 一轮的组合运行
 
-## 为什么这个例子比单智能体案例更像真实系统
+它把这些因素放在一起，才真正形成了“共享工作区下的记忆分区”。
 
-单智能体案例更像“记忆能不能工作”。
-
-而这个案例更像“真实工作流里怎么设计记忆边界”。
-
-因为它已经开始处理：
-
-- 多角色
-- 多轮
-- 同一 workspace
-- 不同记忆布局
-
-这比单纯开 `Memory()` 更接近生产设计问题。
-
-## `_print_tree()` 的价值
+## `_print_tree()` 为什么有价值
 
 这个例子最后会分别打印：
 
@@ -120,36 +105,41 @@ Engineering agent 只跑一轮，但它很关键。
 - `sessions/gtm`
 - `sessions/engineering`
 
-这一步非常好，因为它直接让你看到：
+这一步很重要，因为它直接让你看到：
 
 - 哪些文件被各自 agent 写下来了
 - rollout / memory 目录是否真的分开
 
 也就是把“布局隔离”从配置层验证到了产物层。
 
-## 我从这个案例得到的实践结论
+## 一个具体场景怎么理解这张案例卡
 
-如果未来你要在一个 sandbox workspace 里放多个 agent，先问的不是：
+如果一个团队里同时有商业分析 agent 和工程修复 agent，它们可能都会用同一个工作区里的文件和产物，但这并不意味着前者的分析结论应该自动进入后者的长期记忆。
 
-- 这些 agent 叫什么
+这个案例最值得学的地方，就是把这种“共享现场但不共享长期经验”的边界做成了目录布局，而不是停留在概念层。
 
-而是：
+## 最该记住的点
 
-- 它们该不该共享长期记忆
-- 如果不该，共享哪些目录，隔离哪些目录
+- 多 agent 共用同一个 workspace，并不意味着应该共用同一份长期记忆
+- 决定记忆隔离的关键不是 agent name，而是 `MemoryLayoutConfig` 里的目录布局
+- 多轮 session continuity 和多 agent memory isolation 可以同时存在，它们不是一回事
+- 如果布局不分开，agent 的长期记忆很容易互相污染
 
-而 OpenAI Agents Python 给出的正统答案就是：
+## 易错点
 
-- 用 `MemoryLayoutConfig` 显式分区
+- 容易把多 agent 隔离理解成“给 agent 换个名字”
+- 容易把共用 workspace 误解成必须共享记忆
+- 容易只看配置，不看产物层目录结构
+- 容易把多轮 conversation continuity 和 memory isolation 混为一谈
 
-## 这个案例最适合什么读者
+## 我的理解
 
-它最适合：
+这个案例最接近真实系统设计问题的地方在于，它不再只是问“memory 好不好用”，而是在问“当多个角色开始协作时，长期记忆应该怎样切边界”。
 
-- 已经懂 `SandboxAgent`
-- 已经懂 `Memory()`
-- 开始思考多 agent 工程结构
+OpenAI Agents SDK 给出的答案很明确：边界要落到 layout，而不是停留在命名层。
 
-的人看。
+## 相关笔记
 
-如果还没理解单 agent memory，建议先看 [[案例卡：sandbox memory 单智能体跨快照续跑]]。
+- [[案例卡：sandbox memory 单智能体跨快照续跑]]
+- [[OpenAI Agents SDK Sandbox Memory]]
+- [[OpenAI Agents SDK Sandbox Snapshot 与恢复]]

@@ -9,207 +9,140 @@ type: note
 
 # OpenAI Agents SDK turn_resolution 决策流
 
-## 这页的定位
+## 这是什么
 
-如果说 `run_internal` 是执行引擎，那么 `turn_resolution.py` 就是“决策中枢”。
+这篇笔记记录 `turn_resolution.py` 在运行时里的位置：模型已经返回结果之后，系统怎样把这些结果翻译成“下一步真正要执行什么”。
 
-它最核心的职责不是调用模型，也不是执行工具，而是把模型已经给出的结果翻译成 runtime 真正要做的下一步。
+它更适合作为决策层笔记来读，而不是工具执行层笔记。
 
-## 1. 这个文件最关键的公开函数
+## 为什么重要
 
-从文件入口看，最重要的是这些函数：
+- 一次模型响应不会天然等于一次可执行动作，运行时需要先做解释和分流
+- 这层决定后面是结束、handoff、跑工具、进入 interruption，还是继续下一轮
+- 不理解这里，就很难区分“模型说了什么”和“运行时决定怎么做”之间的差别
 
-- `process_model_response`
-- `get_single_step_result_from_response`
-- `execute_handoffs`
-- `execute_tools_and_side_effects`
-- `check_for_final_output_from_tools`
-- `execute_final_output`
-- `resolve_interrupted_turn`
+## 核心概念
 
-可以粗略把它们分成三类：
+`turn_resolution.py` 可以先记成“本轮决策层”。
 
-- 解析模型响应
-- 决定下一步分支
-- 把本轮收束成 `SingleStepResult`
+它不直接请求模型，也不直接执行工具，而是把模型输出整理成下一步动作，例如：
 
-## 2. 它真正解决的问题
+- 结束
+- handoff
+- 执行工具
+- 中断等待审批
+- 继续下一轮
 
-模型返回 response 之后，runtime 其实还不知道应该做什么。
-
-需要再判断：
-
-- 这是最终答案吗
-- 这是 handoff 吗
-- 这是 function tool / shell / computer / apply_patch 调用吗
-- 这里面有审批中断吗
-- 工具结果能不能直接转成 final output
-
-`turn_resolution.py` 负责把这些问题变成明确的 runtime 结果。
-
-## 3. `process_model_response` 的角色
-
-这应该是这个文件最重要的解析入口。
-
-它的意义可以概括成一句话：
-
-“把模型原始 response 拆成 `ProcessedResponse`。”
-
-而 `ProcessedResponse` 里已经不是原始 response item，而是被分门别类后的可执行计划：
-
-- `handoffs`
-- `functions`
-- `computer_actions`
-- `local_shell_calls`
-- `shell_calls`
-- `apply_patch_calls`
-- `mcp_approval_requests`
-- `interruptions`
-- `new_items`
-
-所以从阅读角度讲：
-
-- `run_steps.py` 定义了容器
-- `process_model_response` 负责把内容装进这个容器
-
-## 4. `get_single_step_result_from_response` 的角色
-
-这个函数更像“本轮总装器”。
-
-我的理解是，它会基于：
-
-- 原始输入
-- 新的模型 response
-- `ProcessedResponse`
-- 当前 agent / hooks / context
-
-决定当前这一轮最终应该产出什么类型的 `SingleStepResult`。
-
-也就是说，它负责把前面的解析结果真正落成：
-
-- `NextStepFinalOutput`
-- `NextStepHandoff`
-- `NextStepRunAgain`
-- `NextStepInterruption`
-
-## 5. `execute_handoffs` 做了什么
-
-这个函数不只是“切换 agent”这么简单。
-
-从源码能看到它还处理了：
-
-- 多个 handoff 同时出现时的冲突处理
-- handoff output item 的补写
-- hooks 的 handoff 回调
-- input filter
-- `nest_handoff_history`
-- server-managed conversation 的兼容限制
-
-所以 handoff 在这里不是一个简单布尔分支，而是一整套“交接上下文”的迁移逻辑。
-
-这也是为什么 handoff 很容易被低估。
-
-## 6. `execute_tools_and_side_effects` 的角色
-
-这个函数的名字已经很说明问题了。
-
-它不只是在“跑工具”，而是在处理一切需要进一步执行的副作用，包括：
-
-- function tool
-- shell / local shell
-- apply patch
-- computer action
-- hosted MCP approval 相关动作
-
-更重要的是，它不是单独闭环，它会把工具执行结果再交回当前 step 的推进逻辑里。
-
-也就是说：
-
-- 工具执行不等于 turn 结束
-- 工具执行只是 turn resolution 的一个分支阶段
-
-## 7. `check_for_final_output_from_tools`
-
-这是一个很值得记住的点。
-
-很多人会默认以为 final output 只能来自模型直接回答，但这个函数说明：
-
-- 工具结果也可能被提升成 final output
-- 这取决于 agent 的 `tools_to_final_output` 语义
-
-所以 runtime 的“结束条件”不只是模型消息，也可能是工具返回值。
-
-这点对理解 agent as tool 和工具主导型工作流很重要。
-
-## 8. `execute_final_output`
-
-一旦确定这轮可以结束，就会走 final output 路径。
-
-这一步主要做的是：
-
-- 调用 `run_final_output_hooks`
-- 构造 `SingleStepResult`
-- 把 `next_step` 标成 `NextStepFinalOutput`
-
-所以它的核心价值不是复杂处理，而是把“已经确定结束”这件事包装成 runtime 标准结果。
-
-## 9. `resolve_interrupted_turn`
-
-这个函数的存在说明，审批与中断不是附属分支，而是主线分支之一。
-
-它要处理的问题是：
-
-- 某轮被 approval 打断后，恢复时怎么继续
-- 哪些 tool call 重新执行
-- 哪些 items 保留
-- 哪些结果需要补回当前 step
-
-所以 interruption / resume 不是简单“从头再来”，而是要接着上一轮的局部状态往下走。
-
-## 10. 我会怎么记这整页
+## 最关键的几个函数
 
 ### `process_model_response`
 
-把 response 解析成可执行计划
+这是最推荐先看的函数。
+
+它负责把模型原始 response 解析成 `ProcessedResponse`。可以先把 `ProcessedResponse` 理解成：
+
+“这一轮模型结果被整理后的可执行计划”。
+
+这里通常会区分出：
+
+- handoffs
+- functions
+- shell calls
+- local shell calls
+- apply patch calls
+- computer actions
+- approval requests
+- interruptions
+- new items
 
 ### `get_single_step_result_from_response`
 
-把可执行计划收束成一步结果
+这个函数负责把前面的解析结果收束成 `SingleStepResult`。
+
+换句话说，它在决定：这一步最后到底落成哪种 `NextStep*`。
 
 ### `execute_handoffs`
 
-处理交接与上下文迁移
+这里处理的不是简单的“切一下 agent”，而是一整次交接：
+
+- handoff 冲突处理
+- handoff 产物补写
+- hooks 回调
+- 输入过滤
+- 上下文迁移
+
+所以 handoff 更像运行时里的角色交接，而不是普通分支跳转。
 
 ### `execute_tools_and_side_effects`
 
-处理工具与副作用分支
+这个函数是本轮需要继续执行动作的统一入口。
 
-### `execute_final_output`
+它不只处理 function tool，还会处理：
 
-处理结束分支
+- shell
+- local shell
+- apply patch
+- computer action
+- approval 相关副作用
+
+### `check_for_final_output_from_tools`
+
+这是一个很值得先记住的点。
+
+final output 不一定只来自模型直接回答，也可能来自工具结果。这对理解工具主导型工作流很重要。
 
 ### `resolve_interrupted_turn`
 
-处理中断恢复分支
+这个函数说明 interruption 不是“从头重来”，而是“从被打断的位置继续往下接”。
 
-## 11. 这一层和上一页怎么配合看
+恢复时要重新处理：
 
-可以这样串：
+- 哪些 tool call 还能继续
+- 哪些 items 要保留
+- 哪些状态要回填
 
-- [[OpenAI Agents SDK run_internal 执行链路]] 负责看总分层
-- 这一页负责看 `turn_resolution.py` 里的决策分流
+## 这一层的数据流
 
-也就是：
+可以先记成三步：
 
-- 上一页回答“有哪些层”
-- 这一页回答“决定往哪条路走的是谁”
+1. 先解析模型输出
+2. 再决定下一步分支
+3. 最后把这一轮收束成标准结果
 
-## 12. 下一步最适合继续补什么
+更具体一点就是：
 
-- `process_model_response` 具体如何按 item 类型分类
-- `execute_tools_and_side_effects` 和 `tool_execution.py` 的边界
-- `resolve_interrupted_turn` 的恢复语义
+- `process_model_response` 负责拆解
+- `execute_handoffs` / `execute_tools_and_side_effects` 负责推进
+- `get_single_step_result_from_response` 负责收束
+
+## 一个具体场景
+
+如果模型输出里同时包含一个 handoff 和一个 tool call，这层就必须先判定冲突关系，再决定哪个动作可以继续推进、哪个动作需要中止或改写。
+
+这说明 `turn_resolution.py` 的重点不是“执行”，而是“解释和分流”。
+
+## 常见操作 / 用法
+
+- 想先抓总入口，先看 `process_model_response`
+- 想看 handoff 怎么真正落地，接着看 `execute_handoffs`
+- 想看工具与 approval 副作用怎么接进决策层，再看 `execute_tools_and_side_effects`
+- 想看中断恢复怎么衔接，继续看 `resolve_interrupted_turn`
+
+## 易错点
+
+- 容易把 `turn_resolution.py` 误看成工具执行层，实际上它更像决策与分流层
+- 容易只盯函数名，不去看 `ProcessedResponse` 和 `SingleStepResult` 这些中间对象
+- 容易忽略 interruption / approval 分支，结果把执行链理解得过于线性
+
+## 我的理解
+
+`turn_resolution.py` 的核心价值，是把模型输出翻译成运行时真正能执行的下一步。
+
+如果没有这层，模型的 response 只是结果文本；有了这层之后，它才会变成 final output、handoff、tool execution 或 interruption 这些真正有运行语义的动作。
 
 ## 相关笔记
 
 - [[OpenAI Agents SDK tool_execution 工具执行流]]
+- [[OpenAI Agents SDK run_internal 执行链路]]
+- [[OpenAI Agents SDK session_persistence 状态持久化]]
+- [[OpenAI Agents SDK 运行时编排]]

@@ -9,110 +9,75 @@ type: note
 
 # OpenAI Agents SDK tool_execution 工具执行流
 
-## 这页的定位
+## 这是什么
 
-`turn_resolution.py` 决定“这一轮要不要跑工具”。
+这篇笔记记录 `tool_execution.py` 在运行时里承担的职责：当 `turn_resolution.py` 已经决定“这一轮要跑工具”之后，工具调用会怎样被归一化、审批、执行，并把结果再收回运行时。
 
-而 `tool_execution.py` 负责回答另一个更具体的问题：
+它更接近工具执行层的结构说明，而不是功能列表。
 
-“决定跑之后，这些工具到底怎么被归一化、审批、执行、报错、追踪并收束回 runtime。”
+## 为什么重要
 
-## 1. 这个文件不是单纯的工具调用器
+- 真正复杂的 agent 工具系统，不只是“把函数调起来”
+- 这层同时处理 payload 归一化、approval、执行、guardrail、tracing 和错误收口
+- 理解这层之后，才更容易看懂工具主导型工作流为什么会比单次函数调用复杂得多
 
-从文件结构看，`tool_execution.py` 同时承接了四类职责：
+## 核心概念
 
-- 工具调用 payload 归一化
-- approval / interruption 相关处理
-- 各类工具的真实执行
-- tool guardrail / tracing / error formatting 收口
+这个文件可以先记成四步：
 
-所以它更像“工具执行运行时”，而不是一个简单 helper 文件。
+1. 识别和规范化不同类型的 tool payload
+2. 判断哪些调用需要 approval
+3. 把调用分发到对应工具族执行
+4. 在执行前后处理 guardrail、tracing 和错误结果
 
-## 2. 先做归一化，再做执行
+## 先做归一化，再谈执行
 
-这个文件前半段有很多看起来很碎的函数，比如：
+这个文件前半段有不少 helper，例如：
 
 - `extract_tool_call_id`
 - `coerce_shell_call`
-- `parse_apply_patch_custom_input`
 - `parse_apply_patch_function_args`
-- `extract_apply_patch_call_id`
-- `coerce_apply_patch_operations`
 - `normalize_shell_output`
 - `serialize_shell_output`
 
-这些函数的共同作用是：
+这些函数看起来零散，但都在做同一件事：先把不同来源、不同形态的工具调用整理成内部更稳定的数据结构。
 
-把不同来源、不同形态的 tool payload，先变成 runtime 内部更稳定的数据结构。
+如果少了这一步，后面的 approval 和执行分发就很难统一处理。
 
-所以阅读时不要把它们当成杂项；它们其实是在给后面的统一执行打地基。
+## approval 为什么是主线能力
 
-## 3. approval 是主线能力，不是外挂
-
-这个文件里有一整块函数都和审批相关：
+这个文件里一整块逻辑都在处理审批，例如：
 
 - `resolve_approval_status`
 - `resolve_approval_interruption`
-- `resolve_approval_rejection_message`
 - `function_needs_approval`
 - `process_hosted_mcp_approvals`
 - `collect_manual_mcp_approvals`
-- `index_approval_items_by_call_id`
 
-这说明 SDK 把工具审批看成运行主线的一部分。
+从这里能明显看出，SDK 不是“看见 tool call 就直接跑”，而是会先判断：
 
-也就是说，工具执行并不是：
+1. 这次调用是否需要审批
+2. 如果需要，是立即中断还是生成 approval item
+3. 批准后怎样继续执行
+4. 拒绝时怎样回收为 rejection output 或错误消息
 
-“看到 tool call 就直接跑。”
+## function tool 为什么最值得重点看
 
-而更像：
+这个文件最重的一块通常是 function tool 批量执行。
 
-1. 先判断是否需要 approval
-2. 如果需要，生成 interruption 或 approval item
-3. 批准后再执行
-4. 拒绝时生成 rejection output 或错误消息
+其中 `_FunctionToolBatchExecutor` 很值得先记住，因为它体现的不是简单并发，而是：
 
-这和普通 demo 型 agent 最大的差别之一，就是它把人工审批正式纳入了 runtime。
+- 并发执行
+- 错误仲裁
+- 取消传播
+- 后台任务清理
+- 结果汇总
 
-## 4. function tool 的执行明显最复杂
+它很能说明一件事：工具执行层处理的是“执行运行时”，不是单个函数调用。
 
-从源码结构看，最重的部分是 function tool 批量执行。
+## 公开执行入口是按工具族分发的
 
-相关关键对象和函数包括：
-
-- `_FunctionToolFailure`
-- `_FunctionToolTaskState`
-- `_FunctionToolBatchExecutor`
-- `execute_function_tool_calls`
-
-我当前的理解是：
-
-- 这里不是串行一个个跑 function tool
-- 而是支持并发批处理
-- 同时又要在并发过程中处理取消、失败优先级、后台任务清理和后置阶段异常
-
-所以这个文件很大，不是因为功能乱，而是因为它认真处理了并发工具执行中的很多边缘情况。
-
-## 5. 为什么 `_FunctionToolBatchExecutor` 值得记住
-
-如果以后只想抓 `tool_execution.py` 的一个核心对象，我会优先记这个类。
-
-原因是它集中体现了这套 SDK 对 function tool 执行的态度：
-
-- 不是 naive parallelism
-- 而是带故障仲裁、取消传播、后置等待和结果收集的批量执行器
-
-从这个类能看出作者比较在意：
-
-- 哪个错误应该成为主错误
-- 取消后后台任务怎么排干
-- post-invoke 阶段的失败会不会掩盖根因
-
-这类细节很像真正跑过复杂 agent 工具链后才会补上的工程处理。
-
-## 6. 公开执行函数是“按工具族分发”的
-
-真正对外给 `run_internal` 其它模块调用的执行入口主要是这些：
+这里常见的入口包括：
 
 - `execute_function_tool_calls`
 - `execute_custom_tool_calls`
@@ -122,101 +87,56 @@ type: note
 - `execute_computer_actions`
 - `execute_approved_tools`
 
-这说明这一层不是按“单个工具”处理，而是按“工具类型家族”分发。
-
-所以更适合的理解方式是：
+可以先这样记：
 
 - `turn_resolution` 决定“这一轮有哪些工具任务”
-- `tool_execution` 决定“每一类工具任务怎么执行”
+- `tool_execution` 决定“每一类工具任务怎样跑”
 
-## 7. tool guardrails 其实也在这里收口
+## guardrail 和 tracing 不是事后补的
 
-这个文件后段还有：
+这个文件后段还能看到：
 
 - `_execute_tool_input_guardrails`
 - `_execute_tool_output_guardrails`
 
-这点很重要，因为它说明 tool guardrail 并不是一个完全独立的子系统。
+这说明 guardrail 是贴着执行时机发生的，不是最后统一校验一下。
 
-更准确地说：
+同样，tracing 也不是收尾日志，而是从工具真正执行时就被包进 span。
 
-- guardrail 的定义在别处
-- 真正贴着工具执行时机调用 guardrail 的地方在 `tool_execution.py`
+## 一个具体场景
 
-所以这层是工具运行时真正发生约束的地方。
+如果模型这一轮同时产出了一个 function tool 和一个 shell call，那么这层至少要处理：
 
-## 8. tracing 也不是最后再补的
+- 两种 payload 的归一化
+- 哪些调用需要 approval
+- 哪些调用可以并发执行
+- 执行前后的 guardrail
+- 出错后如何统一回收结果
 
-`with_tool_function_span` 这类函数说明：
+这个场景能帮助我记住：`tool_execution.py` 处理的是一整段执行过程，不是单点调用。
 
-- 工具执行从一开始就被包在 tracing span 里
-- 错误消息是否暴露敏感信息也会在这里处理
+## 常见操作 / 用法
 
-这说明 tracing 和 error formatting 都不是“执行完再记一笔日志”，而是工具执行路径的原生组成部分。
+- 想看“这一轮为什么进入工具执行”，先回到 `turn_resolution.py`
+- 想看“function tool 批量执行时怎么处理并发和错误”，重点看 `_FunctionToolBatchExecutor`
+- 想看“approval 是怎么嵌进执行链的”，重点看 `resolve_approval_status`、`resolve_approval_interruption`、`execute_approved_tools`
+- 想看“shell / apply patch / computer action 怎么落地”，继续顺着对应的 `execute_*` 入口读
 
-## 9. 一条我现在更认可的执行心智模型
+## 易错点
 
-当某轮决定执行工具时，`tool_execution.py` 更像是在跑下面这条链：
+- 容易把 `tool_execution.py` 当成“工具调用器”，忽略它其实是工具执行运行时
+- 容易把 approval 当成外围逻辑，但它实际上深度嵌在执行链里
+- 容易只关注 function tool，忘了 shell、apply patch、computer action 也在这里统一落地
 
-1. 识别工具调用 ID 和 payload
-2. 归一化成统一内部格式
-3. 判断是否需要 approval
-4. 必要时产生 interruption / rejection
-5. 进入具体工具族执行函数
-6. 在执行前后跑 tool guardrails
-7. 把结果、错误和 tracing 一并收束
-8. 返回给 `turn_resolution` 继续决定下一步
+## 我的理解
 
-## 10. 这一层和 `turn_resolution.py` 的边界
+`tool_execution.py` 最值得记住的，不是哪几个 helper，而是它把“工具怎么安全地、可观察地、可中断地执行”这件事真正落成了运行时能力。
 
-我目前会这样区分两者：
+如果说 `turn_resolution.py` 负责决定“下一步干什么”，那这里负责的就是“这一步怎么真正干成”。
 
-### `turn_resolution.py`
+## 相关笔记
 
-负责决定：
-
-- 跑不跑工具
-- 跑哪类工具
-- 跑完之后下一步是继续、handoff、结束还是中断
-
-### `tool_execution.py`
-
-负责决定：
-
-- 这些工具具体怎么跑
-- 审批怎么插入
-- 错误怎么裁决
-- 输出怎么规范化
-
-所以：
-
-- `turn_resolution` 偏策略分流
-- `tool_execution` 偏执行基础设施
-
-## 11. 我会怎么记这页
-
-### payload helpers
-
-把原始 tool payload 变成内部可执行格式
-
-### approval helpers
-
-决定工具能不能执行、是否需要中断
-
-### batch executor
-
-处理 function tool 的并发执行、失败仲裁与清理
-
-### family executors
-
-分别执行 function / shell / local shell / apply_patch / computer
-
-### guardrail + tracing
-
-在工具执行时机真正落地约束和观测
-
-## 12. 下一步最值得补的细化方向
-
-- `_FunctionToolBatchExecutor` 的失败仲裁细节
-- `execute_approved_tools` 的恢复语义
-- shell / apply_patch / computer 三类工具的差异
+- [[OpenAI Agents SDK turn_resolution 决策流]]
+- [[OpenAI Agents SDK session_persistence 状态持久化]]
+- [[OpenAI Agents SDK run_internal 执行链路]]
+- [[OpenAI Agents SDK 运行时编排]]

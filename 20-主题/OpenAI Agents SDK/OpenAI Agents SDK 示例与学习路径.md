@@ -8,9 +8,30 @@ type: note
 
 # OpenAI Agents SDK 示例与学习路径
 
-## 第一层：最小可运行
+## 这是什么
 
-先看 `examples/basic/`：
+这篇笔记整理的是 OpenAI Agents SDK 示例目录的导航方式，目标不是把所有 example 都记住，而是知道不同示例分别在帮助我理解哪一层能力。
+
+如果已经对运行时主线有基本认识，这页可以用来决定下一步应该看最小闭环、常见 agent 模式，还是 sandbox 与完整工作流。
+
+## 为什么重要
+
+- 示例很多，如果没有分层，容易从头跑到尾却不知道每个例子在证明什么
+- 把示例和运行时主题对应起来，能更快把“会跑 demo”变成“知道它为什么这样设计”
+- 它也是从入门代码过渡到真实工程实践的桥梁
+
+## 怎么选第一组示例
+
+- 如果只想先跑通一次最小闭环，从 `examples/basic/` 开始
+- 如果想看常见 agent 组织方式，先读 `agent_patterns`
+- 如果想看更接近真实工程的接入方式，跳到 `memory / mcp / model_providers`
+- 如果目标是工作区 agent 和长任务，重点看 `examples/sandbox/`
+
+## 示例分组导航
+
+### 1. 最小可运行闭环
+
+先看 `examples/basic/`，重点关注：
 
 - `hello_world.py`
 - `tools.py`
@@ -18,11 +39,11 @@ type: note
 - `tool_guardrails.py`
 - `usage_tracking.py`
 
-这一层的目标是先把 `Agent + Runner + tool` 的最小闭环跑通。
+这一层的目标是跑通 `Agent + Runner + tool` 的最小闭环。
 
-## 第二层：常见 agent 模式
+### 2. 常见 agent 模式
 
-`examples/agent_patterns/README.md` 总结得很清楚，值得重点吃透：
+看 `examples/agent_patterns/README.md`，重点理解：
 
 - deterministic flow
 - routing
@@ -31,21 +52,19 @@ type: note
 - guardrails
 - human in the loop
 
-这一层最适合拿来和源码层概念建立映射。
+这一层最适合拿来和运行时概念做映射。
 
-## 第三层：状态、外部工具与 provider
+### 3. 状态、外部工具与 provider
+
+关注：
 
 - `examples/memory/`
 - `examples/mcp/`
 - `examples/model_providers/`
 
-这一层对应的是“从 demo 进入真实工程”的三个维度：
+这组示例主要回答 demo 如何进入更接近真实工程的场景。
 
-- 多轮状态
-- 工具外接
-- 模型替换
-
-## 第四层：Sandbox
+### 4. Sandbox
 
 建议顺序：
 
@@ -55,40 +74,61 @@ type: note
 4. `examples/sandbox/memory.py`
 5. `examples/sandbox/unix_local_runner.py`
 
-这是从“普通 agent”升级到“工作区 agent”的关键跃迁。
+这一层对应的是从“普通 agent”进入“工作区 agent”的关键跳转。
 
-## Sandbox 记忆案例
+### 5. 完整工作流示例
 
-如果已经理解 sandbox 基础能力，接下来最值得看的两张案例卡是：
-
-- [[案例卡：sandbox memory 单智能体跨快照续跑]]
-- [[案例卡：sandbox memory 多智能体多轮隔离]]
-
-## 第五层：完整工作流示例
-
-如果要看更像真实系统的组织方式，优先看：
+最后可以看：
 
 - `examples/research_bot/`
 - `examples/financial_research_agent/`
 - `examples/customer_service/main.py`
 
-这几组示例适合观察：
+这里主要观察多角色拆分、工作流编排和最终输出组织。
 
-- manager / planner / writer / verifier 的角色拆分
-- 多 agent 如何串起来
-- 最终输出如何整理
+## Sandbox 相关案例卡
 
-## Sandbox 项目卡
+如果已经理解 sandbox 的基础能力，可以接着看：
 
-如果想看更接近“产品切片”的 sandbox 教程，先看：
+- [[案例卡：sandbox memory 单智能体跨快照续跑]]
+- [[案例卡：sandbox memory 多智能体多轮隔离]]
+
+## Sandbox 项目卡入口
+
+如果目标不是理解单个 API，而是看较完整的 sandbox 工作流，可以直接跳到：
 
 - [[项目卡：sandbox repo_code_review 工作流]]
 - [[项目卡：sandbox vision_website_clone 工作流]]
 
-## 我给自己的学习路线
+可以这样分：
 
-第一阶段：`basic + quickstart`  
-第二阶段：`agent_patterns`  
-第三阶段：`running_agents + sessions + tracing`  
-第四阶段：`sandbox + mcp + model_providers`  
-第五阶段：`realtime + voice + experimental/codex`
+- `repo_code_review` 更偏代码审查型工作流
+- `vision_website_clone` 更偏视觉复刻型工作流
+
+## 适合怎么用这页
+
+- 当我想找“最小闭环”示例时，从 `examples/basic/` 开始
+- 当我想把运行时概念对应到常见套路时，看 `agent_patterns`
+- 当我想研究工作区 agent 时，重点进 `examples/sandbox/`
+- 当我想看更像正式应用的组织方式时，再进入完整工作流和项目卡
+
+## 易错点
+
+- 容易把示例导航页当成固定课程表，实际应根据当前问题跳读
+- 容易只盯某个 demo 的业务外壳，不去对应底层运行时概念
+- 容易在没理解基本闭环前就直接钻进 sandbox 或多代理示例
+
+## 我的理解
+
+示例最有价值的地方，不是替我背 API，而是帮我把抽象运行时概念落到一段能运行的代码上。
+
+只要知道每组示例分别对应哪一层能力，我就更容易从“看过例子”进入“能拿它做判断和迁移”。
+
+## 相关笔记
+
+- [[OpenAI Agents SDK 学习总览]]
+- [[OpenAI Agents SDK 研究路线]]
+- [[OpenAI Agents SDK 运行时编排]]
+- [[OpenAI Agents SDK Sandbox、MCP 与扩展生态]]
+- [[案例卡：sandbox memory 单智能体跨快照续跑]]
+- [[案例卡：sandbox memory 多智能体多轮隔离]]

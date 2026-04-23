@@ -6,94 +6,82 @@ tags:
   - 代码审查
   - 项目
 type: note
-source: E:\AI_Writer\vendor\openai-agents-python\examples\sandbox\tutorials\repo_code_review
+source: D:\Git_Obsidian\Obsidian\40-源码镜像\AI_Writer Vendor\openai-agents-python\examples\sandbox\tutorials\repo_code_review
 ---
 
 # 项目卡：sandbox repo_code_review 工作流
 
-## 这张卡在讲什么
+## 这是什么
 
-这个 tutorial 不是在教“怎么再写一个 code review prompt”，而是在演示一个完整的 sandbox 审查工作流闭环：
+`sandbox repo_code_review` 是一个用 OpenAI Agents SDK 搭建的代码审查工作流样例。
+
+它展示的不是单条 code review prompt，而是一条完整闭环：
 
 1. 挂载一个真实 git 仓库
-2. 在隔离工作区里运行测试、读代码、看 diff
+2. 在隔离环境里运行测试、读取代码、检查变更
 3. 以结构化结果返回 review findings
-4. 把 review artifacts 持久化到输出目录
-5. 用 eval 脚本校验结果是否符合契约
+4. 把 review 产物写入输出目录
+5. 用 eval 脚本校验结果是否满足契约
 
-所以它更像一个最小可运行的“代码审查 agent 产品切片”。
+因此，这个项目更适合被理解为一个最小可运行的“代码审查 agent 项目卡”。
 
-## 1. 这个项目的目标故意很窄
+## 为什么重要
 
-README 里把 contract 说得非常明确：
+- 它展示的不是单个 API，而是一条从输入、运行、输出到评估都闭合的 sandbox 工作流
+- 代码审查天然需要仓库、shell、patch 和结构化结果，这个项目把这些能力放在同一条链上
+- 它很适合用来理解 agent 工作流怎样从 demo 走向可回归、可评估的系统
+
+## 这个项目主要在验证什么
+
+我现在会把它理解成在验证四件事：
+
+1. sandbox 能否稳定挂载并审查一个真实仓库
+2. agent 是否真的通过工具接触代码和测试结果，而不是只靠语言模型猜测
+3. 审查结果能否被建模成结构化输出和独立 artifact
+4. 整条工作流能否通过 eval 契约做回归校验
+
+它的 contract 也故意收得很窄：
 
 - 必须返回恰好两个 findings
 - 一个针对 `repo/.github/workflows/test.yml`
 - 一个针对 `repo/src/sample/simple.py`
 - patch 只允许修改 `simple.py`
 
-这类“窄 contract”很重要，因为它让 demo 结果可评估、可回归，而不是完全开放式输出。
+这种窄 contract 的价值在于，结果可以被精确检查，而不是停留在“看起来像是做对了”。
 
-## 2. 输入设计非常干净
+## 这个项目的工作流结构
 
-`main.py` 里的 manifest 只挂了两样东西：
+### 输入层
+
+这个项目的输入层很干净，只依赖两类核心输入：
 
 - `AGENTS.md`
-- 通过 `GitRepo(...)` 挂载的 `pypa/sampleproject` 指定提交
+- 通过 `GitRepo(...)` 挂载的固定仓库与指定提交
 
-这背后的意义是：
+这意味着：
 
 - agent 有明确的工作规则来源
-- 仓库输入是可复现、可固定的
-- 每次跑 demo 的代码上下文都稳定
+- 仓库输入可复现、可固定
+- 每次运行面对的代码上下文是稳定的
 
-所以这不是“让 agent 随便审一个仓库”，而是故意收窄成一个可复现教程。
+### 运行层
 
-## 3. `AGENTS.md` 是核心工作契约
+运行层的关键不只是调用 agent，而是要求 agent 在 sandbox 中真正接触工作区。
 
-这个示例里，真正定义 agent 行为的重点不是 `question`，而是 `AGENTS.md`。
+这个项目里几个有代表性的设计是：
 
-里面明确规定了：
+- 通过 `SandboxAgent` 进入隔离环境
+- 通过 shell 和文件系统工具读代码、跑测试、生成 patch
+- 使用 `Runner.run_streamed(...)` 承载这类长任务流程
+- 通过 `tool_choice="required"` 强制 agent 用工具接触仓库
 
-- 要跑哪条测试命令
-- findings 该对应哪两个文件
-- 不要评论哪些文件
-- 不要直接修改 mounted repo
-- `fix_patch` 必须是什么样的最小 diff
+这里真正重要的是 grounded in workspace。对于代码审查这类任务，不读文件、不跑测试的结果通常不可靠。
 
-这很值得记，因为它体现了 sandbox agent 的一个常见模式：
+### 输出层
 
-- 用户 prompt 给任务
-- `AGENTS.md` 给硬约束和工作规程
+输出层不是一段自然语言评论，而是被建模成程序可消费的数据结构。
 
-## 4. 这个项目为什么适合 sandbox
-
-因为它天然需要下面这些能力：
-
-- 读真实仓库
-- 跑测试命令
-- 搜索文件
-- 生成 patch
-- 组织输出产物
-
-这些事情如果没有 sandbox，往往就得自己拼：
-
-- repo 暂存
-- shell tool
-- 文件系统工具
-- artifact 写出
-- 生命周期管理
-
-这个 tutorial 的价值就在于，它把这些东西作为一个整体展示出来。
-
-## 5. structured output 是这个项目的第二个核心
-
-`main.py` 里定义了两个 Pydantic 模型：
-
-- `ReviewFinding`
-- `RepoReviewResult`
-
-其中 `RepoReviewResult` 明确要求输出：
+`main.py` 中定义的 `ReviewFinding` 与 `RepoReviewResult` 会把结果整理为：
 
 - `test_command`
 - `test_result`
@@ -101,54 +89,17 @@ README 里把 contract 说得非常明确：
 - `review_markdown`
 - `fix_patch`
 
-这表示这个工作流不是“让 agent 输出一段自然语言审查意见”而已，而是把 review 结果建模成程序可消费的数据结构。
-
-这一步特别像产品化，而不只是 demo。
-
-## 6. 产物写盘逻辑也很有代表性
-
-`write_review_artifacts()` 会把结果拆成三类 artifact：
+此外，结果还会被拆成独立 artifact 写盘：
 
 - `review.md`
 - `findings.jsonl`
 - `fix.patch`
 
-这说明最终输出不是只有一个 `final_output`。
+这说明真实工作流里的最终产物通常包括三类东西：给人读的总结、给机器消费的 findings、可直接应用的 patch。
 
-更常见的真实形态其实是：
+### 评估层
 
-- 人看的总结
-- 机器读的 findings
-- 可直接应用的 patch
-
-这个 tutorial 很清楚地把三者分开了。
-
-## 7. 流式运行很适合这类长任务
-
-`main.py` 用的是 `Runner.run_streamed(...)`，并且逐个打印 stream events。
-
-这很适合 code review 这类任务，因为它通常不是秒回型回答，而是：
-
-- 先跑测试
-- 再读代码
-- 再形成判断
-- 再组织输出
-
-所以项目级 sandbox 工作流很常见的模式就是 streamed run，而不是一次性同步返回。
-
-## 8. `tool_choice="required"` 很有意思
-
-这个设置说明作者希望 agent 必须通过工具接触仓库，而不是只靠语言模型空想。
-
-这和审查型任务很契合，因为：
-
-- 不读文件、不跑测试的审查没有可信度
-
-所以这个设置是在把“必须 grounded in workspace”写进模型行为层。
-
-## 9. eval 脚本是这个项目最产品化的地方
-
-`evals.py` 并没有做复杂 benchmark，但它已经足够说明思路：
+评估层用 `evals.py` 检查结果是否满足 contract，例如：
 
 - findings 数量必须是 2
 - file path 必须精确命中目标文件
@@ -156,54 +107,42 @@ README 里把 contract 说得非常明确：
 - `simple.py` comment 必须提到 `add_one` 和 `-> int`
 - patch 只能改 `simple.py`
 
-这说明 sandbox tutorial 在教的不是“让 agent 看起来会做事”，而是：
+这说明它验证的不是“agent 看起来像会做审查”，而是“代码审查工作流能不能变成一个有 contract、有 artifact、有校验的可回归系统”。
 
-“怎么把 agent 工作流变成一个有 contract、有 artifact、有校验的可回归系统。”
+## 一个具体场景怎么理解这张项目卡
 
-## 10. 我对这个项目的一句话理解
+如果我想做一个可回归的审查型 agent，这个项目最值得抄的不是某条 prompt，而是它的骨架：
 
-它是一个“把真实仓库审查任务产品化”的最小模板。
+- 输入仓库固定
+- agent 必须通过工具接触真实工作区
+- 输出被拆成结构化结果和独立 artifact
+- 最后再用 eval 契约检查结果是否合格
 
-## 11. 这个项目最值得借鉴的结构
+这个场景能帮助我记住：项目卡的价值，在于保留“工作流结构”，不是保留一段漂亮提示词。
 
-我会把它拆成下面几层：
+## 最该记住的点
 
-### 输入层
+- 这不是 prompt 示例，而是一个完整的代码审查 agent 工作流切片
+- `AGENTS.md` 在这里承担的是硬约束和工作规程，不只是补充说明
+- 对审查类任务来说，`tool_choice="required"` 代表必须基于真实工作区做判断
+- structured output 加 artifact 写盘，才让结果真正可消费、可落地
+- eval 契约让这个项目从 demo 走向可回归系统
 
-- pinned repo
-- `AGENTS.md`
-- 明确 question
+## 易错点
 
-### 运行层
+- 容易把它理解成“写一个 code review prompt”的教程
+- 容易把 `AGENTS.md` 当成普通说明文件，而忽略它在这里其实是行为约束的一部分
+- 容易忽略结构化输出和 artifact，只有自然语言总结不足以支撑后续程序消费和回归评估
+- 容易低估 eval 契约的重要性，没有 contract，审查结果很容易停留在主观感受层
 
-- `SandboxAgent`
-- `Shell + Filesystem`
-- streamed run
+## 我的理解
 
-### 输出层
+这个项目最值得复用的，不是某条 prompt，而是它的工作流骨架：固定输入仓库、通过工具接触真实工作区、输出结构化结果、落盘 artifact、再用 eval 校验 contract。
 
-- structured final output
-- markdown artifact
-- jsonl findings
-- patch artifact
+如果要做一个可回归的审查型 agent，这套骨架比单次审查效果更重要。
 
-### 评估层
+## 相关笔记
 
-- 用 `evals.py` 校验 contract
-
-## 12. 适合什么时候看这个项目
-
-它最适合放在：
-
-- 已经理解 sandbox 和 structured output
-- 想看一个更像真实产品切片的例子
-
-之后。
-
-如果还在最小阶段，先看前面的 basic / memory 案例更合适。
-
-## 13. 后续可以怎么继续拆
-
-- 把 `AGENTS.md` 里的规则单独抽成“审查型 agent 提示词模板”
-- 对照 `healthcare_support` 看线性 workflow 和多 agent workflow 的差别
-- 再补 `vision_website_clone`，形成“代码审查型”和“视觉复刻型”两种项目卡对照
+- [[项目卡：sandbox vision_website_clone 工作流]]
+- [[OpenAI Agents SDK 示例与学习路径]]
+- [[OpenAI Agents SDK Sandbox、MCP 与扩展生态]]

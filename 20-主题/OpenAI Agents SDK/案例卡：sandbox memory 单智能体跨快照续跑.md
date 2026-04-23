@@ -6,138 +6,108 @@ tags:
   - Memory
   - 示例
 type: note
-source: E:\AI_Writer\vendor\openai-agents-python\examples\sandbox\memory.py
+source: D:\Git_Obsidian\Obsidian\40-源码镜像\AI_Writer Vendor\openai-agents-python\examples\sandbox\memory.py
 ---
 
 # 案例卡：sandbox memory 单智能体跨快照续跑
 
-## 这个示例在演示什么
+## 这是什么
 
-这个案例最核心的目标不是“怎么启用 Memory()”，而是演示：
+这是一个用 `SandboxAgent`、`Memory()` 和 `LocalSnapshotSpec` 组合出来的案例，用来验证单智能体能否在 sandbox session 结束后，依然通过 snapshot 恢复工作现场，并在新 session 中继续利用上一轮形成的记忆。
 
-- 第一次运行完成真实工作
-- 关闭 sandbox session，触发 memory 生成
-- 再从 snapshot 恢复一个新的 sandbox session
-- 第二次运行在新的 session 中读取第一次留下的工作记忆
+它不是在讲“如何打开 memory 功能”，而是在讲 memory 和 snapshot 组合之后，跨 session 续跑是否真的成立。
 
-所以它验证的是：
+## 为什么重要
 
-“memory 能不能跨 snapshot 恢复后继续发挥作用。”
+- 它把 `memory` 和 `snapshot` 的职责拆开验证了一次
+- 两者组合后，任务连续性不必依赖同一个长活 session
+- 这很接近真实的 agent 工作方式：先完成一轮，再在新的运行环境里接着处理后续任务
+
+## 这个案例主要在验证什么
+
+### 1. 它验证的不是普通多轮对话
+
+这个案例没有把两轮任务放在同一个存活中的 sandbox session 里连续完成，而是刻意经历了下面这条链路：
+
+1. 第一轮运行完成真实任务
+2. 关闭当前 sandbox session
+3. 在 session 关闭后生成 memory artifacts
+4. 通过 snapshot 恢复新的 sandbox session
+5. 在新 session 中继续第二轮任务
+
+所以它要验证的是：任务连续性是否还能在“旧 session 已经结束”的前提下成立。
+
+### 2. 它验证 memory 和 snapshot 的分工
+
+这个案例最有价值的地方，不是展示某个 API 调用，而是把两类连续性拆开：
+
+- `snapshot` 保留文件、环境和工作现场
+- `memory` 保留任务背景、前一轮结果和后续可复用的摘要
+
+如果只有 snapshot，没有 memory，第二轮虽然能看到文件现场，但不一定能自然理解“上一轮为什么这样改”。如果只有 memory，没有 snapshot，又缺少具体工作现场。
+
+这个案例验证的是两者配合后的完整续跑语义。
+
+### 3. 它验证第二轮 prompt 是否真的依赖前一轮成果
+
+案例中的两轮任务是连着的：
+
+- 第一轮修复 invoice total bug
+- 第二轮为这个 bug 增加 regression test
+
+第二轮不是新任务，而是建立在第一轮成果之上的延续任务。也正因为这样，这个案例才能真正验证 memory 是否让系统记住了“刚刚修过什么、下一步应该做什么”。
 
 ## 关键结构
 
-这个例子用了四个关键点：
+这个案例的运行语义主要由四个部分构成：
 
 - `SandboxAgent(... capabilities=[Memory(), Filesystem(), Shell()])`
 - `LocalSnapshotSpec(...)`
 - 第一次 `Runner.run(...)`
-- `client.resume(sandbox.state)` 后的第二次 `Runner.run(...)`
+- `client.resume(sandbox.state)` 之后的第二次 `Runner.run(...)`
 
-这四个点组合起来，才构成完整语义。
+这四个点组合起来，才构成“跨快照续跑”的完整含义。
 
-## 为什么它不是普通多轮
+## `_print_memory_tree()` 为什么有价值
 
-这个例子故意没有只在同一个 `async with sandbox` 里连续跑两轮。
+这个例子里 `_print_memory_tree()` 很有价值，因为它能把两件事直接对上：
 
-它选择：
+- 运行语义：memory 在这次案例里到底承担了什么
+- 实际产物：memory 文件最终落成了什么目录和内容
 
-1. 第一轮结束并退出 sandbox session
-2. 让 memory artifacts 在 session 关闭时生成
-3. 再 resume 到新 session
+这会让“跨 session 续跑”不只停留在 prompt 结果层，而能落到工作区产物层。
 
-所以它强调的是：
+## 一个具体场景怎么理解这张案例卡
 
-- 不是依赖“进程里还留着状态”
-- 而是依赖 snapshot + memory artifacts 的组合
+如果一个 agent 在第一轮已经修完 bug，第二轮需要基于这个结果补测试，那么真正有价值的并不是“记住上一段聊天”，而是同时保留：
 
-这和单纯的 in-memory 连续运行完全不同。
+- 第一轮改过的工作现场
+- 第一轮沉淀出的任务记忆
 
-## manifest 设计也很有针对性
+这个案例最值得学的，就是它把这两类连续性拆开验证了。
 
-示例里的 manifest 很小，但足够形成一个真实问题场景：
+## 最该记住的点
 
-- 一个有 bug 的 `report.py`
-- 一个失败预期明确的 `pytest`
+- 这个案例验证的是“memory 能不能跨 snapshot 恢复后继续发挥作用”，不是单纯演示 `Memory()` 怎么启用
+- `snapshot` 保工作现场，`memory` 保工作记忆；两者配合才构成真正的跨 session 续跑
+- 只在同一个长活 session 里连续运行，不足以说明 memory 机制已经被验证
+- `_print_memory_tree()` 能把运行语义和 memory 文件实际产物对应起来
 
-这样第一轮的任务是修 bug，第二轮的任务是补回归测试。
+## 易错点
 
-这种设计很适合验证 memory 是否真的记住了：
+- 容易把这个案例理解成普通多轮对话示例
+- 容易把 snapshot 当成全部连续性来源，而忽略 memory 更偏任务背景和经验摘要
+- 容易只盯着 API 表面调用，看漏“关闭 session 后再恢复”的运行语义
+- 容易忽略第二轮 prompt 的设计，它之所以有验证价值，就是因为明显依赖第一轮成果
 
-- 刚修过哪个 bug
-- 第二轮应该围绕什么继续工作
+## 我的理解
 
-## prompt 设计的意图
+这个案例最有价值的地方，是它把“经验延续”和“工作现场延续”拆成了两条线，再验证它们能不能在新的 sandbox session 里重新合起来。
 
-两个 prompt 分别是：
+也正因为这样，它比单纯演示 `Memory()` 更接近真实的长期任务语义。
 
-- 第一轮：修复 invoice total bug
-- 第二轮：为前一个 bug 添加 regression test
+## 相关笔记
 
-这里第二轮 prompt 明显是“依赖上一轮成果”的。
-
-如果没有 memory / snapshot 这条链，第二轮其实很难自然续上。
-
-## 这个例子体现出的运行语义
-
-我会把它总结成下面这条线：
-
-1. 第一轮在 workspace 里做修改
-2. sandbox session 关闭时，memory manager 生成记忆文件
-3. workspace 通过 snapshot 保留下来
-4. 新 sandbox session 从 snapshot 恢复
-5. 第二轮通过 memory summary / MEMORY / rollout summaries 感知前情
-
-所以这里不是 snapshot 或 memory 单独起作用，而是两者配合：
-
-- snapshot 保工作现场
-- memory 保工作经验
-
-## 最值得观察的几个细节
-
-### `Memory()` 用默认配置
-
-这说明官方把它视作推荐默认，而不是只有专家才用的高级开关。
-
-### `LocalSnapshotSpec`
-
-说明示例重点就是“跨 session 续跑”。
-
-### `_print_memory_tree()`
-
-这个辅助函数非常有价值，因为它直接把示例产出的：
-
-- `sessions/`
-- `MEMORY.md`
-- `memory_summary.md`
-- `raw_memories/`
-- `rollout_summaries/`
-
-都打印出来，让你能把运行语义和落盘文件对上。
-
-## 我从这个案例得到的实践结论
-
-如果你要做：
-
-- coding agent
-- review agent
-- 会在多个会话之间延续工作的 sandbox agent
-
-那么最自然的组合不是只用 session，而是：
-
-- sandbox
-- snapshot
-- memory
-
-三者一起上。
-
-## 这个案例适合放在学习路径的哪个位置
-
-我会把它放在：
-
-- 已经理解 `SandboxAgent`
-- 已经理解 snapshot 基础概念
-- 准备进入长任务 agent
-
-之后再看。
-
-因为它不是最小 hello world，而是“工作区连续性”示例。
+- [[OpenAI Agents SDK Sandbox Memory]]
+- [[OpenAI Agents SDK Sandbox Snapshot 与恢复]]
+- [[案例卡：sandbox memory 多智能体多轮隔离]]

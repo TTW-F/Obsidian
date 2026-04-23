@@ -7,225 +7,106 @@ tags:
   - 前端
   - 项目
 type: note
-source: E:\AI_Writer\vendor\openai-agents-python\examples\sandbox\tutorials\vision_website_clone
+source: D:\Git_Obsidian\Obsidian\40-源码镜像\AI_Writer Vendor\openai-agents-python\examples\sandbox\tutorials\vision_website_clone
 ---
 
 # 项目卡：sandbox vision_website_clone 工作流
 
-## 这张卡在讲什么
+## 这是什么
 
-这个 tutorial 展示的不是通用网页生成，而是一个非常窄但非常典型的视觉型 sandbox 工作流：
+`sandbox vision_website_clone` 是一个视觉型 sandbox 项目模板。它要解决的不是“通用网页开发”，而是一个更窄、更清晰的任务：给定一张参考截图，在 sandbox 中逐步复刻出静态网页，并通过截图反复校正结果。
 
-1. 读取一张参考截图
-2. 在 sandbox 里写静态 HTML/CSS
-3. 用浏览器截图检查结果
-4. 再根据截图继续修正
-5. 最后把生成站点和视觉调试产物复制回宿主
+它的核心工作流是：
 
-所以它更像一个“视觉复刻 agent”的最小模板。
+1. 读取参考截图
+2. 记录视觉观察
+3. 生成静态 HTML/CSS
+4. 用浏览器截图检查结果
+5. 根据截图差异继续修正
+6. 把成品和调试产物带回宿主
 
-## 1. 这个项目的目标故意很窄
+所以这张项目卡更适合把它记成“视觉复刻 agent 的最小工作流模板”。
 
-README 一开始就强调了：
+## 为什么重要
 
-- 这是 narrow UI repro target
-- 不是 web-app scaffold
-- 不启动本地浏览器服务
-- 不做 FastAPI
+- 它证明 sandbox 不只适合代码仓库任务，也适合以文件和截图为中心的长任务
+- 视觉任务真正难的不是生成第一版页面，而是把“看图、改图、再看图”的循环写进工作流
+- 这个 tutorial 很适合拿来对照 `repo_code_review`，看 sandbox 如何支持另一种完全不同的 grounded workflow
 
-这点很重要，因为它说明作者在刻意把问题收窄成：
+## 这个项目主要在验证什么
 
-“给定视觉参考，把可见界面还原成静态前端产物。”
+我现在会把它理解成在验证五件事：
 
-也正因为目标窄，视觉调试流程才更容易被看清。
+1. sandbox 可以围绕单张视觉参考图组织完整任务，而不依赖完整代码仓库
+2. `view_image` 可以成为视觉型任务的主要 grounding 入口
+3. 前端生成不必停在“出第一版页面”，而可以进入截图比对和持续修正闭环
+4. sandbox 不只输出最终网页，也能保留中间截图和视觉笔记这类调试证据
+5. skill 可以按需加载，让浏览器能力在真正需要时再进入工作流
 
-## 2. 输入设计极简但很有效
+## 视觉工作流结构
 
-manifest 只挂了三样东西：
-
-- `AGENTS.md`
-- `reference/reference-site.png`
-- `output/`
-
-这意味着整个任务的输入几乎全部围绕那一张参考图展开。
-
-这和 `repo_code_review` 的“挂整个仓库”完全不同，也很好地说明了：
-
-- sandbox 并不只适合代码仓库任务
-- 它同样适合文件驱动、视觉驱动的长任务
-
-## 3. `AGENTS.md` 是这类视觉任务的主流程控制器
-
-这个示例里的 `AGENTS.md` 写得非常流程化，甚至比 code review 那张更强流程导向。
-
-它明确要求 agent：
-
-- 第一件事就 `view_image`
-- 先写 `visual-notes.md`
-- 再生成 `output/site/index.html` 和 `styles.css`
-- 再加载 `playwright` skill
-- 必须拍 `draft-1.png`
-- 看完后继续修
-- 再拍 `draft-2.png`
-
-这说明视觉型 agent 的关键不只是“会看图”，而是：
-
-“把视觉检查和修订回路写进任务契约。”
-
-## 4. 这是一个典型的视觉调试闭环
-
-我会把它总结成下面这条链：
-
-1. `view_image(reference)`
-2. 先写视觉观察笔记
-3. 生成第一版静态站点
-4. 用浏览器截图产出 `draft-1.png`
-5. 再 `view_image(draft-1.png)` 做差异比对
-6. 修改站点
-7. 再拍 `draft-2.png`
-
-这和普通“生成网页”最大的差异就在于：
-
-- 它把 screenshot critique loop 变成了工作流核心
-
-## 5. 为什么这个项目一定要 `view_image`
-
-README 和 `AGENTS.md` 都把这一点写成 required workflow。
-
-这是因为对这类任务来说，真正的 grounding 不是仓库文件，而是视觉参考本身。
-
-如果没有 `view_image`，模型只能靠 prompt 猜界面。
-
-所以这类视觉型 sandbox 任务的 grounding 入口是：
-
-- 图像理解
-
-而不是：
-
-- 仓库阅读
-
-## 6. skill 懒加载的用法也很有代表性
-
-这个案例还有一个很值得借鉴的点：
-
-- `Skills(lazy_from=LocalDirLazySkillSource(...), skills_path="skills")`
-
-也就是说：
-
-- 并不是启动时就把全部 skill 全塞进 sandbox
-- 而是让 agent 在需要的时候 `load_skill("playwright")`
-
-这特别适合视觉/前端类任务，因为：
-
-- 浏览器自动化不一定每次都要用
-- 但一旦需要，就可以显式拉起
-
-这是一种很工程化的 capability 供给方式。
-
-## 7. 输出设计也分成两层
-
-这类任务最后的产物不是只有网页文件。
-
-它会把 sandbox 内部生成的内容复制回宿主：
-
-- `index.html`
-- `styles.css`
-- `screenshots/draft-1.png`
-- `screenshots/draft-2.png`
-- `visual-notes.md`
-
-这说明视觉型工作流的真实输出往往有两类：
-
-- 最终成品
-- 中间复盘证据
-
-后者在视觉任务里尤其重要，因为它能让人直接看到 agent 是怎么逐步逼近参考图的。
-
-## 8. 这个项目为什么也用 streamed run
-
-和 code review 一样，这里也用了 `Runner.run_streamed(...)`。
-
-原因也很类似：
-
-- 任务不是一次性文本生成
-- 中间会发生多轮观察、编辑、截图、再观察
-
-所以 streamed run 在这里不仅是“更好看日志”，而是更贴合视觉迭代任务本身的节奏。
-
-## 9. `tool_choice="required"` 在这里的意义
-
-这个设置在视觉任务里同样关键。
-
-因为如果 agent 不真正调用：
-
-- `view_image`
-- shell / filesystem
-- skill 里的浏览器能力
-
-那它就只能靠想象输出一个网页。
-
-而这个 demo 的价值就在于证明：
-
-- 视觉型任务也可以被严格 grounded in tools
-
-## 10. 和 `repo_code_review` 的对照很有价值
-
-我会这样对照这两个项目卡：
-
-### `repo_code_review`
-
-- 输入是 git repo
-- 核心 grounding 是 shell + file inspection
-- 输出是结构化 review + patch
-- eval 更偏 contract 检查
-
-### `vision_website_clone`
-
-- 输入是 reference screenshot
-- 核心 grounding 是 `view_image` + browser screenshots
-- 输出是静态站点 + 视觉调试产物
-- eval 更偏人工视觉检查
-
-这说明 sandbox tutorial 不是只有一种工作流形态，而至少覆盖了：
-
-- 代码/仓库型
-- 视觉/界面型
-
-两种典型范式。
-
-## 11. 我对这个项目的一句话理解
-
-它是一个“把视觉参考复刻任务产品化”的最小 sandbox 模板。
-
-## 12. 这个项目最值得借鉴的结构
+这个项目最值得复用的部分，不是某段 HTML/CSS，而是它把视觉任务组织成了一条很清晰的闭环。
 
 ### 输入层
 
-- 参考截图
+- 一张参考截图
 - 明确的视觉工作规程
+- 用于带回结果的输出目录
 
 ### 运行层
 
-- `view_image`
-- `Filesystem`
-- `Shell`
-- 懒加载 `playwright` skill
-- 截图复盘循环
+1. `view_image(reference)` 读取参考图
+2. 先写视觉观察笔记
+3. 生成静态页面
+4. 用浏览器截图得到第一版结果
+5. 再看截图并比对差异
+6. 继续修改页面
+7. 输出新的截图和最终站点
+
+这条链条的关键不在“生成网页”，而在“把 screenshot critique loop 写进工作流本身”。
 
 ### 输出层
 
 - HTML/CSS 成品
-- 两轮草稿截图
-- visual notes
+- 中间截图，如 `draft-1.png`、`draft-2.png`
+- 视觉观察笔记，如 `visual-notes.md`
 
-## 13. 适合什么时候看这个项目
+这说明视觉型任务的输出通常分成两层：
 
-它最适合放在：
+- 最终成品
+- 调试证据
 
-- 已经理解 sandbox 基础能力
-- 已经懂 `view_image`
-- 想看一条非代码仓库型工作流
+后者很重要，因为它能直接说明 agent 是怎样一步步逼近参考图的。
 
-之后。
+## 一个具体场景怎么理解这张项目卡
 
-如果你主要关心 coding/review 类任务，可以先看 [[项目卡：sandbox repo_code_review 工作流]]。
+如果一个 agent 只根据图片描述直接吐出第一版 HTML/CSS，它很可能只能做出“看起来差不多”的页面。
+
+而这个项目真正有价值的地方，是它把“看图、改图、再看图”的闭环变成了工作流骨架。这样视觉任务就不再只是一次生成，而是一次带反馈回路的迭代过程。
+
+## 最该记住的点
+
+- 这个项目不是通用网页脚手架，而是“视觉参考复刻”的最小模板
+- 对这类任务来说，真正的 grounding 入口通常是 `view_image`，而不是仓库阅读
+- 视觉任务最重要的不是第一版页面，而是“看图、改图、再看图”的闭环是否被写进流程
+- skill 的价值在这里不是越多越好，而是按需加载合适能力，例如浏览器自动化
+- 最终输出不应只有网页文件，还应保留截图和视觉笔记这类中间证据
+
+## 易错点
+
+- 容易把它理解成通用前端项目模板
+- 容易把视觉任务只看成一次性页面生成，而忽略截图比对和持续修正
+- 容易省掉 `view_image`，结果任务退化成“靠 prompt 猜界面”
+- 容易忽视中间产物，视觉笔记和草稿截图其实是复盘和校正的重要依据
+- 容易把所有能力都预先塞进环境，而不是按需拉起浏览器类 skill
+
+## 我的理解
+
+这个项目最值得复用的，不是某段网页代码，而是它把视觉 grounding、页面生成和截图校正串成了一条可反复执行的闭环。
+
+如果要做一个靠谱的视觉型 agent，这类“反馈回路先行”的工作流骨架，比第一版页面本身更重要。
+
+## 相关笔记
+
+- [[项目卡：sandbox repo_code_review 工作流]]
+- [[OpenAI Agents SDK 示例与学习路径]]

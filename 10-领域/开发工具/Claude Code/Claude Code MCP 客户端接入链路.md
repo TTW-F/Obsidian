@@ -10,18 +10,19 @@ type: area
 
 # Claude Code MCP 客户端接入链路
 
-## 研究边界
+## 这是什么
 
-这篇只关注 `Claude Code` 如何把 MCP server 接进自身运行时，不展开成通用 MCP 教程。
+这篇笔记记录 Claude Code 怎样把 MCP server 接进自己的运行时，以及这些外部能力怎样继续受本地系统治理。
 
-## 我研究这部分时最关心什么
+这里的重点不是“怎么配置 MCP”，而是“外部协议怎样被接成平台能力”。
 
-- MCP 在系统里只是工具来源，还是正式能力总线
-- 配置解析、连接管理、能力发现是否分层
-- tools、resources、prompts、auth 如何一起进入运行时
-- 外部 server 接入后怎样继续受本地治理
+## 为什么重要
 
-## 关键文件
+- MCP 在 Claude Code 里不是附加功能，而是正式的外部能力接入面
+- 一旦外部 server 能提供 tools、resources、prompts 和 auth，系统就必须回答接入、可见性和治理问题
+- 理解这条接入链路，有助于判断 Claude Code 为什么能把外部能力纳入同一套运行时
+
+## 关键源码入口
 
 - `src/services/mcp/client.ts`
 - `src/services/mcp/config.ts`
@@ -29,70 +30,66 @@ type: area
 - `src/tools/ListMcpResourcesTool/`
 - `src/tools/ReadMcpResourceTool/`
 
-## 为什么这块重要
+这些位置至少说明两件事：
 
-MCP 在 Claude Code 里不是“附加功能”，而是外部能力总线之一。
+1. MCP 有独立的客户端和配置层
+2. MCP 暴露出来的资源已经能进入工具体系，而不只是停在底层连接层
 
-它的价值不只是让模型多几个工具，而是把外部系统的：
+## Claude Code 的 MCP 接入链大致怎么走
 
-- tools
+可以先记成下面这条链：
+
+1. 读取并解析 MCP 配置
+2. 决定哪些 server 可以启用
+3. 建立对应 transport 连接
+4. 拉取 tools、resources、prompts 等能力
+5. 把这些能力注入 Claude Code 的工具与上下文体系
+6. 在运行过程中继续处理 auth、elicitation、连接缓存和资源刷新
+
+这说明 MCP 接入不是一次性初始化，而是一条持续参与会话运行的链路。
+
+## 这里最值得记住的几个点
+
+### transport 不止一种
+
+从客户端和配置层可以看出，这里要处理的不只是一个固定连接方式，而是可能覆盖 stdio、SSE、HTTP、WebSocket 等 transport。
+
+### MCP 不只是工具来源
+
+对 Claude Code 来说，MCP 带进来的不仅是 tools，还有：
+
 - resources
 - prompts
 - auth
 - elicitation
 
-一起纳入 Claude Code 的运行时。
+这点很重要，因为它说明 MCP 在这里更像平台接口，而不是远程工具代理。
 
-## 我看到的接入链路
+### 外部能力不会脱离本地治理
 
-我当前理解的链路大致是：
+即使能力来自外部 server，它仍然需要进入本地权限、策略和可见性规则的约束范围。
 
-1. 先读取和解析 MCP 配置
-2. 决定哪些 server 可以启用
-3. 建立对应 transport 连接
-4. 拉取 tools / resources / prompts
-5. 把可见能力注入 Claude Code 的工具与上下文体系
-6. 在运行中继续处理 auth、elicitation、连接缓存和资源刷新
+## 一个具体场景怎么理解这条链路
 
-这说明 MCP 接入不是单次初始化，而是一条持续参与会话运行的链路。
+如果某个 MCP server 提供一组资源读取能力和几个工具，那么 Claude Code 不能只“把工具列出来”就结束了，它还得继续回答：
 
-## Claude Code 为什么值得研究
+- 这些能力是否对当前会话可见
+- 需要什么授权
+- 资源是否能进入上下文
+- 出错或断连后怎样恢复
 
-因为它没有把 MCP 只做成一个“远程工具代理”。
+这正是 MCP 接入链比“调用远程 API”复杂的地方。
 
-相反，它在认真处理：
+## 易错点
 
-- stdio / SSE / HTTP / WebSocket 等 transport
-- server 配置与策略过滤
-- tool naming 与命令排除
-- 资源读取与资源可见性
-- 用户授权与交互式补全
-
-这说明它是在把 MCP 当成平台接口，而不是脚本接口。
-
-## 我提炼出的实现启发
-
-- MCP 接入最好有独立客户端层，不要散落在工具实现里
-- 配置解析、连接管理、能力发现、交互授权应该分层
-- 外部 server 进入系统后，仍然要受本地权限与策略治理
-- resources 和 prompts 与 tools 一样重要，不能只盯着 tool call
-
-## 如果继续往下读
-
-我会继续看：
-
-1. MCP server 生命周期由谁管理
-2. resources / prompts 如何进入上下文构建
-3. auth 和 elicitation 是否会回流到主交互层
-4. 本地权限系统如何覆盖外部 MCP 能力
-
-## 我的理解
-
-Claude Code 对 MCP 的处理方式说明，一个成熟 agent 平台不会只把外部协议当成“连上就行”，而会把它视为正式的能力接入面。
+- 容易把 MCP 只理解成工具来源，忽略 resources、prompts、auth 和 elicitation
+- 容易把 MCP 接入看成一次性初始化，忽略连接、授权和资源刷新会持续参与运行时
+- 容易假设外部能力接进来后就脱离本地治理，但在 Claude Code 里它们仍然会继续碰到本地权限、可见性和资源管理逻辑
 
 ## 相关笔记
 
 - [[Claude Code 总览]]
+- [[Claude Code 阅读路径与关键文件入口]]
 - [[Claude Code 扩展总线：Skills、Plugins、MCP]]
 - [[Claude Code 输入预处理、工具调度与权限插入]]
 - [[../../../20-主题/Agentic CLI/技能、插件与扩展机制]]

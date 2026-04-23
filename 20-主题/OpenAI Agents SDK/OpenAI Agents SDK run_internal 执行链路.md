@@ -9,25 +9,27 @@ type: note
 
 # OpenAI Agents SDK run_internal 执行链路
 
-## 这页的用途
+## 这是什么
 
-这页不是再讲一遍 Agent 概念，而是专门回答一个更实用的问题：
+这篇笔记专门用来回答一个源码层问题：`Runner.run()` 进入 `run_internal/` 之后，执行链到底分成哪些层，数据又是怎样在这些层之间流动的。
 
-`Runner.run()` 进入 `run_internal/` 之后，代码到底怎么分层、数据怎么在各层之间流动。
+重点是把目录里的职责分工和数据流讲清楚。
 
-## 我研究这部分时最关心什么
+## 为什么重要
 
-- `run_internal/` 为什么要拆成这么多文件
-- 每个文件解决的是准备、解析、执行还是持久化问题
-- `run_steps.py` 里的中间对象为什么是理解整条链的关键
+- `run_internal/` 是理解这套 SDK 运行时骨架的核心目录
+- 如果只看单个函数，很容易迷路；先看分层，再看细节，理解会稳得多
+- 这里的中间对象也决定了后面工具执行、handoff 和状态持久化怎样接起来
 
-## 1. `run_internal/` 里的几个关键角色
+## 核心概念
 
-### `run_steps.py`
+### `run_internal/` 里最关键的几个角色
 
-这是中间数据结构层。
+### `run_steps.py`：状态交换协议
 
-它定义了运行循环里最常见的“执行单元”和“下一步决策”：
+`run_steps.py` 可以先看成执行链里的“状态交换协议”。
+
+这里定义的对象，例如：
 
 - `ProcessedResponse`
 - `SingleStepResult`
@@ -36,113 +38,81 @@ type: note
 - `NextStepRunAgain`
 - `NextStepInterruption`
 
-我会把它看成整条执行链的“状态交换协议”。
+共同回答的是：一轮模型响应被整理后，运行时允许进入哪些下一步状态。
 
-### `turn_preparation.py`
+如果只记一个最关键文件，可以先记它，因为它告诉我“当前数据长什么样”。
 
-这是“本轮准备层”。
+### `turn_preparation.py`：本轮准备层
 
-它主要负责：
+这层主要负责在真正请求模型前把上下文准备好，包括：
 
 - 校验 `RunHooks`
 - 解析 output schema
-- 拿到当前 agent 可用的 handoffs
-- 拿到当前 agent 可用的 tools
-- 解析当前要用的 model
+- 收集当前 agent 可用的 handoffs
+- 收集当前 agent 可用的 tools
+- 解析本轮要用的 model
 - 在必要时过滤模型输入
 
-### `turn_resolution.py`
+它对应的问题不是“如何执行”，而是“这轮执行的材料有没有备齐”。
 
-这是“本轮解析与决策层”。
+### `turn_resolution.py`：本轮决策层
 
-它负责把模型输出变成下一步动作。
+这层负责把模型输出翻译成运行时下一步动作。
 
-### `tool_execution.py`
+比如模型返回后，到底是直接结束、切换 handoff、继续跑工具，还是进入 interruption，决策主要都在这里完成。
 
-这是“工具执行层”。
+### `tool_execution.py`：工具执行层
 
-它不只做 function tool 调用，还负责：
+这一层真正处理工具怎么跑。它不只负责 function tool 调用，也覆盖 approval、shell、apply patch、computer action，以及执行过程里的 tracing 和 guardrail 配套逻辑。
 
-- approval plumbing
-- shell call / local shell
-- apply patch
-- computer action
-- tool error / tracing / guardrail 配套逻辑
+### `session_persistence.py`：状态延续层
 
-### `session_persistence.py`
+这一层负责把 session history 和新输入组合成模型输入，并在 turn 结束后把新增的 run items 安全写回 session。
 
-这是“持久化层”。
+它的重点不只是保存，更包括防重、回滚、resume 和 interruption 后的状态修正。
 
-它主要负责：
+### `run_loop.py`：总编排层
 
-- 把 session history 和新输入合成可发给模型的输入
-- 在 guardrail 触发时保存必要输入
-- 把本轮新增的 run items 落进 session
-- interruption / resume 后修正 `RunState`
+这层把前面几部分真正串起来，也是我理解“一次 turn 怎样跑完”的最好入口。
 
-### `run_loop.py`
+## 一次 turn 的粗粒度流向
 
-这是“总编排层”。
+一轮执行可以先按下面顺序理解：
 
-它把前面这些模块真正串在一起，并提供几个关键入口：
-
-- `start_streaming`
-- `run_single_turn_streamed`
-- `run_single_turn`
-- `get_new_response`
-
-## 2. 一次 turn 的粗粒度流向
-
-我当前整理出来的执行顺序是：
-
-1. `turn_preparation.py` 先准备 model、tools、handoffs、output schema
+1. `turn_preparation.py` 准备 model、tools、handoffs 和 output schema
 2. `run_loop.py` 请求模型，拿到新的 response
-3. `turn_resolution.py` 处理 response，生成 `ProcessedResponse`
-4. 如果是 final output，就走 finalization
-5. 如果是 handoff，就切 agent
-6. 如果有 tools / approvals，就交给 `tool_execution.py`
+3. `turn_resolution.py` 把 response 解析成 `ProcessedResponse`
+4. 如果结果是 final output，就走结束分支
+5. 如果结果是 handoff，就切换 agent
+6. 如果结果包含工具动作或 approval，就交给 `tool_execution.py`
 7. 本轮新增 items 与结果再交给 `session_persistence.py`
-8. `run_loop.py` 根据 `NextStep*` 决定下一轮还是结束
+8. `run_loop.py` 根据 `NextStep*` 决定结束、继续下一轮，还是进入 interruption
 
-## 3. 为什么 `run_steps.py` 特别重要
+## 一个最值得抓住的观察
 
-很多时候读源码会迷路，不是因为函数太复杂，而是因为不知道“数据此刻长什么样”。
+`run_internal/` 的价值不只在“拆文件”，而在它把 agent 执行过程建成了一套可分流、可恢复、可继续推进的运行协议。
 
-这时 `run_steps.py` 特别关键，因为它告诉你：
+`run_steps.py` 之所以关键，就是因为这些中间对象让整个协议可见了。
 
-- 一次响应被拆成哪些执行项
-- 一次 step 最终会产出什么
-- runtime 允许哪些下一步状态
+## 常见操作 / 用法
 
-## 4. 我对几个关键对象的记忆方式
+- 先看 `run_steps.py`，确认有哪些标准状态
+- 再看 `run_loop.py`，确认这些状态怎样被串起来
+- 最后再分别钻进 `turn_resolution.py`、`tool_execution.py` 和 `session_persistence.py`
 
-### `ProcessedResponse`
+如果顺序反过来，很容易一开始就陷在局部 helper 里。
 
-“模型响应的可执行计划”
+## 易错点
 
-### `SingleStepResult`
+- 容易把 `run_internal/` 看成实现细节，但它其实就是运行时骨架
+- 容易直接从 `tool_execution.py` 开始，结果忽略前面的准备和决策层
+- 容易记函数名，不记中间对象，最后还是看不清数据流
 
-“这一轮执行完后的汇总结果”
+## 我的理解
 
-### `NextStepFinalOutput`
+`run_internal/` 最值得学的地方，不只是“模块分得很细”，而是它把 agent 执行拆成了一组明确的阶段和状态。
 
-“可以结束”
-
-### `NextStepHandoff`
-
-“切给另一个 agent”
-
-### `NextStepRunAgain`
-
-“还要继续下一轮”
-
-### `NextStepInterruption`
-
-“先停下来，等审批或恢复”
-
-## 5. 我的理解
-
-`run_internal/` 最值得学的地方，不只是它把逻辑拆开了，而是它把 agent 执行过程明确建成了一套可传递、可恢复、可分流的运行协议。
+只要把这些阶段和状态先抓稳，后面很多源码细节就不再是零散函数，而会变成同一条运行链上的不同节点。
 
 ## 相关笔记
 
@@ -150,3 +120,4 @@ type: note
 - [[OpenAI Agents SDK turn_resolution 决策流]]
 - [[OpenAI Agents SDK tool_execution 工具执行流]]
 - [[OpenAI Agents SDK session_persistence 状态持久化]]
+- [[OpenAI Agents SDK 运行时编排]]

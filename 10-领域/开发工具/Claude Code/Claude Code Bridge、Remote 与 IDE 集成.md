@@ -11,16 +11,17 @@ type: area
 
 # Claude Code Bridge、Remote 与 IDE 集成
 
-## 研究边界
+## 这是什么
 
-这篇关注 `Claude Code` 如何从终端扩展到 IDE、远程会话和受控连接场景，不展开成通用远程代理架构总论。
+这篇笔记记录 Claude Code 怎样从本地终端延伸到 IDE、远程会话和其他宿主环境。
 
-## 我研究这部分时最关心什么
+这里真正要理解的，不是“有没有远程能力”，而是同一套 agent 运行时怎样被接到不同宿主上，同时尽量保住会话、权限和状态语义。
 
-- 终端之外还有哪些宿主
-- bridge 和 remote 各自解决什么问题
-- 多 transport 为什么是必要的
-- 会话、权限、状态恢复如何跨宿主延续
+## 为什么重要
+
+- 从目录和职责看，Claude Code 并不只打算做一个本地终端工具
+- 一旦要支持 IDE、remote control、远程 session 和多种 transport，很多原本只在本地成立的假设都要重新设计
+- 这层能力决定 Claude Code 能不能从“终端应用”继续长成“多宿主运行平台”
 
 ## 关键目录
 
@@ -29,24 +30,13 @@ type: area
 - `src/server/`
 - `src/cli/transports/`
 
-## 我看到的定位
+这些位置共同说明，Claude Code 已经在认真处理“运行时和宿主解耦”的问题。
 
-从目录和文件职责看，Claude Code 并不把自己限制在“本地终端工具”。
+## bridge 更像在做什么
 
-它明显在向几种场景扩展：
+可以先把 bridge 理解成“宿主桥接层”，而不是简单的消息转发器。
 
-- IDE 插件桥接
-- remote control / direct connect
-- 远程 session
-- 多 transport 的消息传输
-
-这说明终端只是它的一个壳，不是唯一宿主。
-
-## bridge 在做什么
-
-`bridge/bridgeMain.ts` 更像桥接宿主层，而不是一个简单 websocket client。
-
-它需要处理：
+像 `bridge/bridgeMain.ts` 这类入口，通常要同时处理：
 
 - 会话拉起
 - 消息桥接
@@ -55,52 +45,56 @@ type: area
 - 容量唤醒
 - 权限回调
 
-这说明 bridge 的目标不是“传消息”而是“承载一个可恢复的远程交互会话”。
+这说明 bridge 解决的不只是 transport，而是“怎样把 Claude Code 运行时接到另一个宿主上，同时保住交互语义”。
 
-## remote 在做什么
+## remote 更像在做什么
 
-`remote/` 相关逻辑说明 Claude Code 不只考虑本地执行，还在考虑：
+`remote/` 相关逻辑说明 Claude Code 不只考虑“本地跑不跑”，还在处理：
 
 - 会话迁移
 - 仓库匹配
 - teleported session
 - 远程环境下的状态恢复
 
-这是一种明显的平台化信号，因为它开始关心“agent 在哪里运行”和“上下文如何跨环境延续”。
+一旦 agent 不再固定跑在本地，就必须重新回答两个问题：
 
-## 多 transport 的意义
+1. 它现在到底在哪运行
+2. 原来的上下文怎样继续延续
 
-从 `cli/transports/` 可以看到它支持多种传输方式。
+## transport 抽象为什么重要
 
-这背后的价值不是技术炫技，而是：
+从 `cli/transports/` 可以看出，Claude Code 支持多种传输方式。
 
-- 让不同宿主都能接同一套 runtime
-- 把 UI、终端、远程控制、结构化输出拆开
-- 让 Claude Code 能在不同交互面之间迁移
+这不是小实现细节，而是在保证：
 
-## 我提炼出的实现启发
+- 不同宿主都能接同一套 runtime
+- UI、终端、远程控制、结构化输出可以分开
+- Claude Code 能在不同交互面之间迁移
 
-- 一个成熟 coding agent 不应把自己绑定死在单一宿主里
-- bridge / remote 不是附属模块，而是运行平台的延伸
-- 一旦要支持 IDE、网页、远程节点，就必须把会话、权限、transport、状态恢复都重新设计
+## 一个具体场景怎么理解这层
 
-## 如果继续往下读
+比如同一个用户任务，可能：
 
-我会继续追：
+- 在 IDE 插件里发起
+- 通过 bridge 交给 Claude Code 运行时
+- 中途需要权限确认
+- 最后又把结果回显到 IDE 或远程会话
 
-1. bridge 和 remote 的会话模型是否统一
-2. transport 抽象如何屏蔽不同宿主差异
-3. IDE 集成是薄桥接还是深度 runtime 复用
-4. 权限确认和状态恢复如何跨端同步
+如果没有 bridge、remote 和 transport 这几层，系统很快就会把“运行时逻辑”和“宿主交互逻辑”硬绑在一起。
 
-## 我的理解
+## 易错点
 
-Claude Code 真正高级的地方，不只是会调工具，而是它已经在尝试成为一个“可嵌入多个宿主的 agent runtime”。
+- 容易把 bridge 理解成单纯传消息，而忽略它还承担会话拉起、认证、心跳和权限回调
+- 容易把 remote 理解成“把本地功能搬远程”，而忽略仓库匹配、会话恢复和环境延续
+- 容易忽视 transport 抽象，一旦宿主变多，它就不再是小细节
+- 容易把这篇笔记读成通用的“多宿主平台”讨论，而忽略 Claude Code 这里真正值得看的，是 `bridge/`、`remote/`、`server/`、`cli/transports/` 分别怎样承接桥接、远端会话、服务端控制和传输抽象
 
 ## 相关笔记
 
 - [[Claude Code 总览]]
+- [[Claude Code 阅读路径与关键文件入口]]
 - [[Claude Code 启动链路与运行模式]]
 - [[Claude Code Agent 主循环与工具执行]]
 - [[Claude Code 会话、状态与上下文系统]]
-- [[../../../20-主题/Agentic CLI/Agentic CLI 研究路线]]
+- [[Claude Code REPL、Ink 与交互层]]
+- [[Claude Code Worktree、Remote Isolation 与执行隔离]]
