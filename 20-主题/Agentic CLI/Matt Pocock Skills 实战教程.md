@@ -148,19 +148,19 @@ flowchart LR
 
 ## 四、按场景选择 Skill
 
-| 场景 | 首选 Skill | 示例 |
-|---|---|---|
-| 不知道下一步怎么走 | `/ask-matt` | `/ask-matt 我有一份 PRD，接下来应该做什么？` |
-| 新功能、规则尚不清楚 | `/grill-with-docs` | `/grill-with-docs …` |
-| 已有讨论，需形成正式规格 | `/to-spec` | `/to-spec` |
-| 规格需拆分为可实施工作 | `/to-tickets` | `/to-tickets <spec>` |
-| 已选定工单，需要开发 | `/implement` | `/implement <ticket>` |
-| 要测试先行开发某个行为 | `/tdd` | `/tdd 为章节排序编写行为测试` |
-| 难复现、间歇性或性能问题 | `/diagnosing-bugs` | `/diagnosing-bugs 导出含图片的章节偶发失败；复现步骤是…` |
-| 当前会话需要交给新会话继续 | `/handoff` | `/handoff 下一会话继续实现角色设定卡的第 2 张工单` |
-| 想找出长期积累的架构摩擦 | `/improve-codebase-architecture` | `/improve-codebase-architecture` |
-| 设计模块接口、测试 seam 或重构形态 | `/codebase-design` | `请使用 codebase-design 设计素材库模块` |
-| 巨大且路径不清晰的项目 | `/wayfinder` | `/wayfinder 规划多租户迁移` |
+| 场景                   | 首选 Skill                         | 示例                                     |
+| -------------------- | -------------------------------- | -------------------------------------- |
+| 不知道下一步怎么走            | `/ask-matt`                      | `/ask-matt 我有一份 PRD，接下来应该做什么？`         |
+| 新功能、规则尚不清楚           | `/grill-with-docs`               | `/grill-with-docs …`                   |
+| 已有讨论，需形成正式规格         | `/to-spec`                       | `/to-spec`                             |
+| 规格需拆分为可实施工作          | `/to-tickets`                    | `/to-tickets <spec>`                   |
+| 已选定工单，需要开发           | `/implement`                     | `/implement <ticket>`                  |
+| 要测试先行开发某个行为          | `/tdd`                           | `/tdd 为章节排序编写行为测试`                     |
+| 难复现、间歇性或性能问题         | `/diagnosing-bugs`               | `/diagnosing-bugs 导出含图片的章节偶发失败；复现步骤是…` |
+| 当前会话需要交给新会话继续        | `/handoff`                       | `/handoff 下一会话继续实现角色设定卡的第 2 张工单`       |
+| 想找出长期积累的架构摩擦         | `/improve-codebase-architecture` | `/improve-codebase-architecture`       |
+| 设计模块接口、测试 seam 或重构形态 | `/codebase-design`               | `请使用 codebase-design 设计素材库模块`          |
+| 巨大且路径不清晰的项目          | `/wayfinder`                     | `/wayfinder 规划多租户迁移`                   |
 
 ## 五、几个容易混淆的选择
 
