@@ -161,6 +161,7 @@ flowchart LR
 | 想找出长期积累的架构摩擦         | `/improve-codebase-architecture` | `/improve-codebase-architecture`       |     |
 | 设计模块接口、测试 seam 或重构形态 | `/codebase-design`               | `请使用 codebase-design 设计素材库模块`          |     |
 | 巨大且路径不清晰的项目          | `/wayfinder`                     | `/wayfinder 规划多租户迁移`                   |     |
+|                      |                                  |                                        |     |
 
 ## 五、几个容易混淆的选择
 
