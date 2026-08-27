@@ -51,8 +51,8 @@ graph TD
 
 - [[10 实现深读①：作品存储与唯一提交服务]] — ✅ 已写：作品目录骨架 / 出生(git init+commit) / 写·Keep·Undo 背后的 git 命令 / 唯一提交服务门面 / 索引同步
 - [[11 实现深读②：六角色与目录限域]] — ✅ 已写：role.ts + role-permissions.ts 逐函数讲透，含权限如何落地 OpenCode PermissionV2
-- [[12 实现深读③：Session 桥接]] — 🔜 待写：命令如何变成 SessionV2.prompt（runtime/opencode/adapter + delegation-flow）
-- [[13 实现深读④：SSE 事件映射]] — 🔜 待写：OpenCode Event V2 → 前端事件（event-mapper + sse-hub + sse-frame）
+- [[12 实现深读③：Session 桥接]] — ✅ 已写：命令→SessionV2.prompt（gateway-run-bridge + adapter + delegation-flow + event-mapper 逐函数）
+- [[13 实现深读④：SSE 事件映射与运行簿记]] — ✅ 已写：sse-frame + sse-hub + run-map + drain-admission + startup-reconciliation 逐函数
 - [[14 实现深读⑤：Workbench HTTP API]] — 🔜 待写：workbench.ts 与各 routes 的边界
 - [[15 实现深读⑥：检索索引]] — 🔜 待写：search/search-index 的写后可见/Undo 消失
 - [[16 实现深读⑦：前端三栏与 projection]] — 🔜 待写：novel-web 的 *-projection.ts 怎么渲染 Agent 信息流
