@@ -57,6 +57,7 @@ graph TD
 - [[15 实现深读⑥：检索索引]] — ✅ 已写：search-index（每作品 SQLite）+ 写后可见/Undo 消失钩子
 - [[16 实现深读⑦：前端三栏与 projection]] — ✅ 已写：agent-chat/projection 薄投影 3 规则 + 三栏联动
 - [[17 实现深读⑧：端到端串联与验收总表]] — ✅ 已写：①–⑦ 一条线串联 + 22 题验收自测总表
+- [[18 实现深读⑨：前端 SSE 订阅与投影驱动]] — ✅ 已写：use-agent-conversation + sse-connection 内核 + event-adapter 信封（④→⑦ 最后一环）
 
 ## 使用约定
 - 所有 `[[wikilink]]` 都能在 Obsidian 里点击跳转；改文件名 Obsidian 会自动更新链接。
