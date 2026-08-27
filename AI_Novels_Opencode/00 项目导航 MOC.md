@@ -53,7 +53,7 @@ graph TD
 - [[11 实现深读②：六角色与目录限域]] — ✅ 已写：role.ts + role-permissions.ts 逐函数讲透，含权限如何落地 OpenCode PermissionV2
 - [[12 实现深读③：Session 桥接]] — ✅ 已写：命令→SessionV2.prompt（gateway-run-bridge + adapter + delegation-flow + event-mapper 逐函数）
 - [[13 实现深读④：SSE 事件映射与运行簿记]] — ✅ 已写：sse-frame + sse-hub + run-map + drain-admission + startup-reconciliation 逐函数
-- [[14 实现深读⑤：Workbench HTTP API]] — 🔜 待写：workbench.ts 与各 routes 的边界
+- [[14 实现深读⑤：Workbench HTTP API 与命令总线]] — ✅ 已写：workbench.ts 树/文档投影 + agent-gateway-routes 命令总线 8 action 逐路由
 - [[15 实现深读⑥：检索索引]] — 🔜 待写：search/search-index 的写后可见/Undo 消失
 - [[16 实现深读⑦：前端三栏与 projection]] — 🔜 待写：novel-web 的 *-projection.ts 怎么渲染 Agent 信息流
 
