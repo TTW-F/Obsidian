@@ -47,8 +47,10 @@ graph TD
 > [!abstract] 目标
 > 让小白也能看懂项目**具体实现**。每篇聚焦一个模块，对照真实源码、解释每行在做什么、末尾给自测题。按编号顺序读。
 
+- [[覆盖率清单]] — 📊 函数级总台账（311 符号 / 79 文件），逐函数勾选进度，全勾满 = 验收通过
+
 - [[10 实现深读①：作品存储与唯一提交服务]] — ✅ 已写：作品目录骨架 / 出生(git init+commit) / 写·Keep·Undo 背后的 git 命令 / 唯一提交服务门面 / 索引同步
-- [[11 实现深读②：六角色与目录限域]] — 🔜 待写：role.ts + role-permissions.ts，角色怎么被代码强制限域
+- [[11 实现深读②：六角色与目录限域]] — ✅ 已写：role.ts + role-permissions.ts 逐函数讲透，含权限如何落地 OpenCode PermissionV2
 - [[12 实现深读③：Session 桥接]] — 🔜 待写：命令如何变成 SessionV2.prompt（runtime/opencode/adapter + delegation-flow）
 - [[13 实现深读④：SSE 事件映射]] — 🔜 待写：OpenCode Event V2 → 前端事件（event-mapper + sse-hub + sse-frame）
 - [[14 实现深读⑤：Workbench HTTP API]] — 🔜 待写：workbench.ts 与各 routes 的边界
