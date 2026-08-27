@@ -12,6 +12,9 @@ updated: 2026-08-27
 > [!abstract] 这是你（实习生）的 onboarding 中枢
 > 本 vault 把 `F:\AI_Novels_OpenCode`（OpenCode fork → 网文 SaaS）的知识整理成互链笔记。**从 [[01 项目是什么]] 开始**，按 [[04 必读文档路线]] 推进，每天对照 [[06 实习学习路线]]。
 
+> [!tip] 完全零基础？先读 [[09 名词解释]]
+> 里面用大白话+比喻解释了 monorepo、OpenCode、fork、HEAD、SSE、wikilink 等所有黑话。其他笔记里的生词都链到了它。
+
 ## 知识地图（Mermaid）
 
 ```mermaid
@@ -23,11 +26,13 @@ graph TD
     E --> F[06 实习学习路线]
     G[07 机器拓扑与红线] --> F
     C -.桥接.-> H[(OpenCode 引擎)]
+    GL[09 名词解释] --> A
 ```
 
 ## 笔记清单
 
 ### 核心概念
+- [[09 名词解释]] — 🚨 零基础第一读：所有黑话的大白话词典
 - [[01 项目是什么]] — 这项目到底是什么、设计铁律、分层
 - [[02 领域词汇表]] — CONTEXT.md 的 ubiquitous language（写代码/文档/票据必须用）
 - [[03 分层架构与包地图]] — 底座引擎 vs 领域层 vs 前端的包划分
