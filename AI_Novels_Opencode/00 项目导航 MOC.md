@@ -43,6 +43,18 @@ graph TD
 - [[06 实习学习路线]] — 5 天实习计划（带 checkbox）
 - [[07 机器拓扑与红线]] — 开发机 vs 192.168.31.35，哪些事绝对不能做
 
+### 实现深读系列（基于真实代码，逐行讲，带自测）
+> [!abstract] 目标
+> 让小白也能看懂项目**具体实现**。每篇聚焦一个模块，对照真实源码、解释每行在做什么、末尾给自测题。按编号顺序读。
+
+- [[10 实现深读①：作品存储与唯一提交服务]] — ✅ 已写：作品目录骨架 / 出生(git init+commit) / 写·Keep·Undo 背后的 git 命令 / 唯一提交服务门面 / 索引同步
+- [[11 实现深读②：六角色与目录限域]] — 🔜 待写：role.ts + role-permissions.ts，角色怎么被代码强制限域
+- [[12 实现深读③：Session 桥接]] — 🔜 待写：命令如何变成 SessionV2.prompt（runtime/opencode/adapter + delegation-flow）
+- [[13 实现深读④：SSE 事件映射]] — 🔜 待写：OpenCode Event V2 → 前端事件（event-mapper + sse-hub + sse-frame）
+- [[14 实现深读⑤：Workbench HTTP API]] — 🔜 待写：workbench.ts 与各 routes 的边界
+- [[15 实现深读⑥：检索索引]] — 🔜 待写：search/search-index 的写后可见/Undo 消失
+- [[16 实现深读⑦：前端三栏与 projection]] — 🔜 待写：novel-web 的 *-projection.ts 怎么渲染 Agent 信息流
+
 ## 使用约定
 - 所有 `[[wikilink]]` 都能在 Obsidian 里点击跳转；改文件名 Obsidian 会自动更新链接。
 - 仓库路径用反引号代码块标注（如 `packages/novel-server/src/main.ts`），方便回 IDE 对照。
