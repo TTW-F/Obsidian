@@ -54,8 +54,9 @@ graph TD
 - [[12 实现深读③：Session 桥接]] — ✅ 已写：命令→SessionV2.prompt（gateway-run-bridge + adapter + delegation-flow + event-mapper 逐函数）
 - [[13 实现深读④：SSE 事件映射与运行簿记]] — ✅ 已写：sse-frame + sse-hub + run-map + drain-admission + startup-reconciliation 逐函数
 - [[14 实现深读⑤：Workbench HTTP API 与命令总线]] — ✅ 已写：workbench.ts 树/文档投影 + agent-gateway-routes 命令总线 8 action 逐路由
-- [[15 实现深读⑥：检索索引]] — 🔜 待写：search/search-index 的写后可见/Undo 消失
-- [[16 实现深读⑦：前端三栏与 projection]] — 🔜 待写：novel-web 的 *-projection.ts 怎么渲染 Agent 信息流
+- [[15 实现深读⑥：检索索引]] — ✅ 已写：search-index（每作品 SQLite）+ 写后可见/Undo 消失钩子
+- [[16 实现深读⑦：前端三栏与 projection]] — ✅ 已写：agent-chat/projection 薄投影 3 规则 + 三栏联动
+- [[17 实现深读⑧：端到端串联与验收总表]] — ✅ 已写：①–⑦ 一条线串联 + 22 题验收自测总表
 
 ## 使用约定
 - 所有 `[[wikilink]]` 都能在 Obsidian 里点击跳转；改文件名 Obsidian 会自动更新链接。
